@@ -1,5 +1,3 @@
 # Perfin
 
-This is not a test. yes not a test
-
-## This is a second level heading
+A simple finance manager app for Android.
