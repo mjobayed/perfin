@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import DatePicker from "@/components/DatePicker";
 
 const NewTransaction = () => {
   const insets = useSafeAreaInsets();
@@ -48,6 +49,7 @@ const NewTransaction = () => {
             </Button>
           </View>
         </View>
+        <DatePicker />
       </View>
     </Surface>
   );
