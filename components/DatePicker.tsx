@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import {
@@ -8,9 +8,14 @@ import {
 } from "react-native-paper-dates";
 registerTranslation("en-GB", enGB);
 
-const DatePicker = () => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [value, setValue] = useState<Date | undefined>(undefined);
+interface DateInputProps {
+  value: Date | undefined;
+  onPick: (date: Date | undefined) => void;
+}
+
+const DatePicker: React.FC<DateInputProps> = ({ value, onPick }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [curDate, setCurDate] = useState("");
 
   const formatDate = (date: Date | undefined) => {
     if (!date) return "";
@@ -23,16 +28,23 @@ const DatePicker = () => {
 
   const handleConfirm = (params: { date: Date | undefined }) => {
     setIsVisible(false);
-    setValue(params.date);
+    onPick(params.date);
   };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  useEffect(() => {
+    setCurDate(formatDate(today));
+  });
 
   return (
     <View>
       <Pressable onPress={() => setIsVisible(true)}>
-        <View>
+        <View pointerEvents="none">
           <TextInput
             label={"Date"}
-            value={formatDate(value)}
+            value={formatDate(value) || curDate}
             mode="outlined"
             placeholder="Select Date"
             left={<TextInput.Icon icon={"calendar"} />}

@@ -16,6 +16,7 @@ const NewTransaction = () => {
   const router = useRouter();
   const theme = useTheme();
   const [txnType, setTxnType] = useState("income");
+  const [txnDate, setTxnDate] = useState<Date | undefined>(undefined);
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
@@ -49,7 +50,7 @@ const NewTransaction = () => {
             </Button>
           </View>
         </View>
-        <DatePicker />
+        <DatePicker value={txnDate} onPick={(date) => setTxnDate(date)} />
       </View>
     </Surface>
   );
