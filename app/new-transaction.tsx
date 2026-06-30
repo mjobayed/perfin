@@ -26,31 +26,21 @@ const NewTransaction = () => {
       <View style={styles.container}>
         <TextInput mode="outlined" label={"Description"} />
 
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={styles.amountContainer}>
           <TextInput mode="outlined" label={"Amount"} style={{ flex: 1 }} />
 
-          <View style={{ marginTop: 4, marginBottom: 4 }}>
+          <View style={styles.txnBtnContainer}>
             <Button
               mode={txnType === "income" ? "contained" : "outlined"}
               onPress={() => setTxnType("income")}
-              style={{
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-              }}
+              style={styles.incomeBtn}
             >
               Income
             </Button>
             <Button
               mode="outlined"
               onPress={() => setTxnType("expense")}
-              style={{
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-              }}
+              style={styles.expenseBtn}
               buttonColor={txnType === "expense" ? theme.colors.error : ""}
               textColor={txnType === "expense" ? theme.colors.background : ""}
             >
@@ -69,6 +59,30 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     gap: 8,
+  },
+
+  amountContainer: {
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  txnBtnContainer: {
+    marginTop: 4,
+    marginBottom: 4,
+  },
+
+  incomeBtn: {
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+
+  expenseBtn: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
 });
 
