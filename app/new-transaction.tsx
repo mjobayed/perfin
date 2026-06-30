@@ -14,14 +14,7 @@ const NewTransaction = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
-
-  const handleIncomeBtn = () => {
-    console.log("Income button pressed");
-  };
-
-  const handleExpenseBtn = () => {
-    console.log("Expense button pressed");
-  };
+  const [txnType, setTxnType] = useState("income");
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
@@ -36,10 +29,10 @@ const NewTransaction = () => {
         <View style={{ flexDirection: "row", gap: 8 }}>
           <TextInput mode="outlined" label={"Amount"} style={{ flex: 1 }} />
 
-          <View style={{ paddingTop: 4, paddingBottom: 4 }}>
+          <View style={{ marginTop: 4, marginBottom: 4 }}>
             <Button
-              mode="contained"
-              onPress={handleIncomeBtn}
+              mode={txnType === "income" ? "contained" : "outlined"}
+              onPress={() => setTxnType("income")}
               style={{
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
@@ -51,15 +44,15 @@ const NewTransaction = () => {
             </Button>
             <Button
               mode="outlined"
-              onPress={handleExpenseBtn}
+              onPress={() => setTxnType("expense")}
               style={{
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
                 borderBottomLeftRadius: 10,
                 borderBottomRightRadius: 10,
               }}
-              buttonColor={theme.colors.error}
-              textColor={theme.colors.background}
+              buttonColor={txnType === "expense" ? theme.colors.error : ""}
+              textColor={txnType === "expense" ? theme.colors.background : ""}
             >
               Expense
             </Button>
