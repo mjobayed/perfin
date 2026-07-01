@@ -18,7 +18,6 @@ export default function Index() {
       if (data) {
         setHistory(JSON.parse(data));
       }
-      console.log(history);
     } catch (err) {
       console.error("Failed to load transactions", err);
     }
