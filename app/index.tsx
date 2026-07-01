@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { AnimatedFAB, Appbar, Surface, Text } from "react-native-paper";
@@ -5,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [isExtended, setIsExtended] = useState(true);
 
   return (
@@ -18,7 +20,7 @@ export default function Index() {
         icon={"plus"}
         label={"New Transaction"}
         extended={isExtended}
-        onPress={() => console.log("pressed")}
+        onPress={() => router.navigate("/new-transaction")}
         animateFrom={"right"}
         iconMode={"dynamic"}
         style={styles.fabStyle}
