@@ -60,6 +60,16 @@ const NewTransaction = () => {
           style={{ height: "50%" }}
         />
       </View>
+
+      <Surface style={styles.bottomBar}>
+        <Button
+          mode="contained"
+          style={styles.addBtn}
+          contentStyle={{ height: 48 }}
+        >
+          Add
+        </Button>
+      </Surface>
     </Surface>
   );
 };
@@ -68,7 +78,7 @@ const styles = StyleSheet.create({
   rootSurface: { flex: 1 },
 
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
     gap: 8,
   },
 
@@ -94,6 +104,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+  },
+
+  bottomBar: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 30,
+  },
+
+  addBtn: {
+    borderRadius: 8,
+    minWidth: 120,
   },
 });
 
