@@ -18,7 +18,7 @@ const NewTransaction = () => {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [txnType, setTxnType] = useState("income");
-  const [txnDate, setTxnDate] = useState<Date | undefined>(undefined);
+  const [txnDate, setTxnDate] = useState<Date | undefined>(new Date());
   const [notes, setNotes] = useState("");
 
   const handleAdd = () => {
