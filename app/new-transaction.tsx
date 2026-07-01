@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   Appbar,
@@ -68,73 +68,75 @@ const NewTransaction = () => {
         <Appbar.Content title="New Transaction" />
       </Appbar.Header>
 
-      <View style={styles.container}>
-        <TextInput
-          mode="outlined"
-          label={"Description"}
-          value={description}
-          onChangeText={(text) => {
-            setDescription(text);
-            if (text) setErrors((prev) => ({ ...prev, description: "" }));
-          }}
-          error={!!errors.description}
-        />
-        {errors.description && (
-          <HelperText type="error" visible={!!errors.description}>
-            {errors.description}
-          </HelperText>
-        )}
-
-        <View style={styles.amountContainer}>
+      <ScrollView>
+        <View style={styles.container}>
           <TextInput
             mode="outlined"
-            label={"Amount"}
-            value={amount}
-            keyboardType="number-pad"
+            label={"Description"}
+            value={description}
             onChangeText={(text) => {
-              setAmount(text.trim());
-              if (text) setErrors((prev) => ({ ...prev, amount: "" }));
+              setDescription(text);
+              if (text) setErrors((prev) => ({ ...prev, description: "" }));
             }}
-            style={{ flex: 1 }}
-            error={!!errors.amount}
+            error={!!errors.description}
           />
+          {errors.description && (
+            <HelperText type="error" visible={!!errors.description}>
+              {errors.description}
+            </HelperText>
+          )}
 
-          <View style={styles.txnBtnContainer}>
-            <Button
-              mode={txnType === "income" ? "contained" : "outlined"}
-              onPress={() => setTxnType("income")}
-              style={styles.incomeBtn}
-            >
-              Income
-            </Button>
-            <Button
+          <View style={styles.amountContainer}>
+            <TextInput
               mode="outlined"
-              onPress={() => setTxnType("expense")}
-              style={styles.expenseBtn}
-              buttonColor={txnType === "expense" ? theme.colors.error : ""}
-              textColor={txnType === "expense" ? theme.colors.background : ""}
-            >
-              Expense
-            </Button>
-          </View>
-        </View>
-        {errors.amount && (
-          <HelperText type="error" visible={!!errors.amount}>
-            {errors.amount}
-          </HelperText>
-        )}
-        <DatePicker value={txnDate} onPick={(date) => setTxnDate(date)} />
+              label={"Amount"}
+              value={amount}
+              keyboardType="number-pad"
+              onChangeText={(text) => {
+                setAmount(text.trim());
+                if (text) setErrors((prev) => ({ ...prev, amount: "" }));
+              }}
+              style={{ flex: 1 }}
+              error={!!errors.amount}
+            />
 
-        <TextInput
-          mode="outlined"
-          label={"Notes"}
-          multiline={true}
-          numberOfLines={100}
-          value={notes}
-          onChangeText={(text) => setNotes(text)}
-          style={{ height: "50%" }}
-        />
-      </View>
+            <View style={styles.txnBtnContainer}>
+              <Button
+                mode={txnType === "income" ? "contained" : "outlined"}
+                onPress={() => setTxnType("income")}
+                style={styles.incomeBtn}
+              >
+                Income
+              </Button>
+              <Button
+                mode="outlined"
+                onPress={() => setTxnType("expense")}
+                style={styles.expenseBtn}
+                buttonColor={txnType === "expense" ? theme.colors.error : ""}
+                textColor={txnType === "expense" ? theme.colors.background : ""}
+              >
+                Expense
+              </Button>
+            </View>
+          </View>
+          {errors.amount && (
+            <HelperText type="error" visible={!!errors.amount}>
+              {errors.amount}
+            </HelperText>
+          )}
+          <DatePicker value={txnDate} onPick={(date) => setTxnDate(date)} />
+
+          <TextInput
+            mode="outlined"
+            label={"Notes"}
+            multiline={true}
+            numberOfLines={100}
+            value={notes}
+            onChangeText={(text) => setNotes(text)}
+            style={{ height: "50%" }}
+          />
+        </View>
+      </ScrollView>
 
       <Surface style={styles.bottomBar}>
         <Button
