@@ -1,6 +1,12 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 import {
   AnimatedFAB,
   Appbar,
@@ -36,6 +42,15 @@ export default function Index() {
       loadHistory();
     }, []),
   );
+
+  const onListScroll = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
 
   const renderTxnItem = ({ item }: { item: TxnData }) => (
     <Card mode="outlined" style={{ marginBottom: 16 }}>
@@ -74,7 +89,8 @@ export default function Index() {
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 110 }}
+        onScroll={onListScroll}
       />
 
       <AnimatedFAB
