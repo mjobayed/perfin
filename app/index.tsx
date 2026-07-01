@@ -1,7 +1,7 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
-import { AnimatedFAB, Appbar, Surface, Text } from "react-native-paper";
+import { FlatList, StyleSheet, View } from "react-native";
+import { AnimatedFAB, Appbar, Card, Surface, Text } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TxnData } from "@/types/types";
@@ -31,7 +31,20 @@ export default function Index() {
   );
 
   const renderTxnItem = ({ item }: { item: TxnData }) => (
-    <Text>hello {item.txnId}</Text>
+    <Card mode="outlined" style={{ marginBottom: 16 }}>
+      <Card.Content style={styles.cardContent}>
+        <View>
+          <Text variant="titleMedium">{item.description}</Text>
+          <Text variant="bodySmall" style={styles.itemDate}>
+            {item.date}
+          </Text>
+        </View>
+
+        <View>
+          <Text variant="titleLarge">{item.amount}</Text>
+        </View>
+      </Card.Content>
+    </Card>
   );
 
   return (
@@ -67,5 +80,16 @@ const styles = StyleSheet.create({
     bottom: 100,
     right: 16,
     position: "absolute",
+  },
+
+  cardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  itemDate: {
+    opacity: 0.6,
+    marginTop: 2,
   },
 });
