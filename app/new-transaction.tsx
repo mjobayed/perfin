@@ -84,6 +84,7 @@ const NewTransaction = () => {
 
     if (valid) {
       await saveTransaction();
+      setTimeout(() => router.navigate("/"), 200);
     }
   };
 
