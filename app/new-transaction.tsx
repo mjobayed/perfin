@@ -144,6 +144,7 @@ const NewTransaction = () => {
           style={styles.addBtn}
           contentStyle={{ height: 48 }}
           onPress={handleAdd}
+          disabled={!description || !amount}
         >
           Add
         </Button>
