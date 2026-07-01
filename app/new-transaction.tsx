@@ -62,7 +62,6 @@ const NewTransaction = () => {
   };
 
   const handleAdd = async () => {
-    console.log("Add button pressed");
     let valid = true;
     let newErrors = { description: "", amount: "" };
     let amountRegex = /^[0-9]*$/;
