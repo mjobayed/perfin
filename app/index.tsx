@@ -1,7 +1,14 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { AnimatedFAB, Appbar, Card, Surface, Text } from "react-native-paper";
+import {
+  AnimatedFAB,
+  Appbar,
+  Card,
+  Surface,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TxnData } from "@/types/types";
@@ -9,6 +16,7 @@ import { TxnData } from "@/types/types";
 export default function Index() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
   const [history, setHistory] = useState<TxnData[]>([]);
 
@@ -40,7 +48,15 @@ export default function Index() {
         </View>
 
         <View>
-          <Text variant="titleLarge">
+          <Text
+            variant="titleLarge"
+            style={{
+              color:
+                item.type === "income"
+                  ? theme.colors.primary
+                  : theme.colors.error,
+            }}
+          >
             {item.type === "income" ? "+" + item.amount : "-" + item.amount}
           </Text>
         </View>
