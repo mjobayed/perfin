@@ -23,6 +23,16 @@ const NewTransaction = () => {
 
   const handleAdd = () => {
     console.log("Add button pressed");
+    const txnObject = {
+      txnId: 1,
+      description,
+      amount,
+      type: txnType,
+      date: txnDate,
+      notes,
+    };
+
+    console.log(txnObject);
   };
 
   return (
