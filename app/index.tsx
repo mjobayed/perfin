@@ -41,7 +41,9 @@ export default function Index() {
         </View>
 
         <View>
-          <Text variant="titleLarge">{item.amount}</Text>
+          <Text variant="titleLarge">
+            {item.type === "income" ? "+" + item.amount : "-" + item.amount}
+          </Text>
         </View>
       </Card.Content>
     </Card>
