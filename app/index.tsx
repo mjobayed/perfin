@@ -44,7 +44,9 @@ export default function Index() {
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
+        contentContainerStyle={{ padding: 16 }}
       />
+
       <AnimatedFAB
         icon={"plus"}
         label={"New Transaction"}
