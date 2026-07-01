@@ -133,7 +133,7 @@ const NewTransaction = () => {
             numberOfLines={100}
             value={notes}
             onChangeText={(text) => setNotes(text)}
-            style={{ height: "50%" }}
+            style={{ height: "55%" }}
           />
         </View>
       </ScrollView>
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
 
   container: {
     paddingHorizontal: 16,
+    paddingTop: 16,
     gap: 8,
   },
 
@@ -187,7 +188,6 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 15,
-    marginBottom: 30,
   },
 
   addBtn: {
