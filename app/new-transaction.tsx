@@ -11,6 +11,8 @@ import {
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TxnData } from "@/types/types";
 
 const NewTransaction = () => {
   const insets = useSafeAreaInsets();
@@ -26,7 +28,40 @@ const NewTransaction = () => {
     amount: "",
   });
 
-  const handleAdd = () => {
+  const saveTransaction = async () => {
+    try {
+      const existingData = await AsyncStorage.getItem("transaction_history");
+      const history = existingData ? JSON.parse(existingData) : [];
+
+      let curId = 0;
+      if (history.length !== 0) {
+        let ids: number[] = [];
+        history.forEach((line: TxnData) => {
+          ids.push(line.txnId);
+        });
+
+        curId = Math.max(...ids);
+      }
+
+      const txnObject = {
+        txnId: curId + 1,
+        description,
+        amount: Number(amount),
+        type: txnType,
+        date: txnDate,
+        notes,
+      };
+
+      await AsyncStorage.setItem(
+        "transaction_history",
+        JSON.stringify([txnObject, ...history]),
+      );
+    } catch (err) {
+      console.error("Storage Error:", err);
+    }
+  };
+
+  const handleAdd = async () => {
     console.log("Add button pressed");
     let valid = true;
     let newErrors = { description: "", amount: "" };
@@ -48,16 +83,7 @@ const NewTransaction = () => {
     setErrors(newErrors);
 
     if (valid) {
-      const txnObject = {
-        txnId: 1,
-        description,
-        amount: Number(amount),
-        type: txnType,
-        date: txnDate,
-        notes,
-      };
-
-      console.log(txnObject);
+      await saveTransaction();
     }
   };
 
