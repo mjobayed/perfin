@@ -51,6 +51,14 @@ const NewTransaction = () => {
           </View>
         </View>
         <DatePicker value={txnDate} onPick={(date) => setTxnDate(date)} />
+
+        <TextInput
+          mode="outlined"
+          label={"Notes"}
+          multiline={true}
+          numberOfLines={100}
+          style={{ height: "50%" }}
+        />
       </View>
     </Surface>
   );
