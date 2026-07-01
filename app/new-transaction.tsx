@@ -15,8 +15,11 @@ const NewTransaction = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
   const [txnType, setTxnType] = useState("income");
   const [txnDate, setTxnDate] = useState<Date | undefined>(undefined);
+  const [notes, setNotes] = useState("");
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
@@ -26,10 +29,21 @@ const NewTransaction = () => {
       </Appbar.Header>
 
       <View style={styles.container}>
-        <TextInput mode="outlined" label={"Description"} />
+        <TextInput
+          mode="outlined"
+          label={"Description"}
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+        />
 
         <View style={styles.amountContainer}>
-          <TextInput mode="outlined" label={"Amount"} style={{ flex: 1 }} />
+          <TextInput
+            mode="outlined"
+            label={"Amount"}
+            value={amount}
+            onChangeText={(text) => setAmount(text)}
+            style={{ flex: 1 }}
+          />
 
           <View style={styles.txnBtnContainer}>
             <Button
@@ -57,6 +71,8 @@ const NewTransaction = () => {
           label={"Notes"}
           multiline={true}
           numberOfLines={100}
+          value={notes}
+          onChangeText={(text) => setNotes(text)}
           style={{ height: "50%" }}
         />
       </View>
