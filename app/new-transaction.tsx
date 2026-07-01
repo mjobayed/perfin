@@ -7,6 +7,7 @@ import {
   Surface,
   TextInput,
   useTheme,
+  HelperText,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
@@ -20,19 +21,35 @@ const NewTransaction = () => {
   const [txnType, setTxnType] = useState("income");
   const [txnDate, setTxnDate] = useState<Date | undefined>(new Date());
   const [notes, setNotes] = useState("");
+  const [errors, setErrors] = useState({
+    description: "",
+    amount: "",
+  });
 
   const handleAdd = () => {
     console.log("Add button pressed");
-    const txnObject = {
-      txnId: 1,
-      description,
-      amount,
-      type: txnType,
-      date: txnDate,
-      notes,
-    };
+    let valid = true;
+    let newErrors = { description: "", amount: "" };
 
-    console.log(txnObject);
+    if (!description) {
+      newErrors.description = "Please enter a description";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (valid) {
+      const txnObject = {
+        txnId: 1,
+        description,
+        amount,
+        type: txnType,
+        date: txnDate,
+        notes,
+      };
+
+      console.log(txnObject);
+    }
   };
 
   return (
@@ -47,8 +64,17 @@ const NewTransaction = () => {
           mode="outlined"
           label={"Description"}
           value={description}
-          onChangeText={(text) => setDescription(text)}
+          onChangeText={(text) => {
+            setDescription(text);
+            if (text) setErrors((prev) => ({ ...prev, description: "" }));
+          }}
+          error={!!errors.description}
         />
+        {errors.description && (
+          <HelperText type="error" visible={!!errors.description}>
+            {errors.description}
+          </HelperText>
+        )}
 
         <View style={styles.amountContainer}>
           <TextInput
