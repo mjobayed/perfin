@@ -36,6 +36,11 @@ const NewTransaction = () => {
       valid = false;
     }
 
+    if (!amount) {
+      newErrors.amount = "Please enter an amount";
+      valid = false;
+    }
+
     setErrors(newErrors);
 
     if (valid) {
@@ -81,8 +86,13 @@ const NewTransaction = () => {
             mode="outlined"
             label={"Amount"}
             value={amount}
-            onChangeText={(text) => setAmount(text)}
+            keyboardType="number-pad"
+            onChangeText={(text) => {
+              setAmount(text.trim());
+              if (text) setErrors((prev) => ({ ...prev, amount: "" }));
+            }}
             style={{ flex: 1 }}
+            error={!!errors.amount}
           />
 
           <View style={styles.txnBtnContainer}>
@@ -104,6 +114,11 @@ const NewTransaction = () => {
             </Button>
           </View>
         </View>
+        {errors.amount && (
+          <HelperText type="error" visible={!!errors.amount}>
+            {errors.amount}
+          </HelperText>
+        )}
         <DatePicker value={txnDate} onPick={(date) => setTxnDate(date)} />
 
         <TextInput
