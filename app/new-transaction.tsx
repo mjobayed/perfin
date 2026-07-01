@@ -30,6 +30,7 @@ const NewTransaction = () => {
     console.log("Add button pressed");
     let valid = true;
     let newErrors = { description: "", amount: "" };
+    let amountRegex = /[0-9]+/;
 
     if (!description) {
       newErrors.description = "Please enter a description";
@@ -39,6 +40,12 @@ const NewTransaction = () => {
     if (!amount) {
       newErrors.amount = "Please enter an amount";
       valid = false;
+    } else if (!amountRegex.test(amount)) {
+      newErrors.amount = "Enter a number";
+      valid = false;
+    } else if (amount.startsWith("-")) {
+      newErrors.amount = '"-" not allowed';
+      valid = false;
     }
 
     setErrors(newErrors);
@@ -47,7 +54,7 @@ const NewTransaction = () => {
       const txnObject = {
         txnId: 1,
         description,
-        amount,
+        amount: Number(amount),
         type: txnType,
         date: txnDate,
         notes,
