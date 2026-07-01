@@ -21,6 +21,10 @@ const NewTransaction = () => {
   const [txnDate, setTxnDate] = useState<Date | undefined>(undefined);
   const [notes, setNotes] = useState("");
 
+  const handleAdd = () => {
+    console.log("Add button pressed");
+  };
+
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header>
@@ -82,6 +86,7 @@ const NewTransaction = () => {
           mode="contained"
           style={styles.addBtn}
           contentStyle={{ height: 48 }}
+          onPress={handleAdd}
         >
           Add
         </Button>
