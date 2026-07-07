@@ -17,7 +17,7 @@ import {
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TxnData } from "@/types/types";
+import { TotalData, TxnData } from "@/types/types";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -25,12 +25,38 @@ export default function Index() {
   const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
   const [history, setHistory] = useState<TxnData[]>([]);
+  const [total, setTotal] = useState<TotalData>({
+    balance: 0,
+    income: 0,
+    expense: 0,
+  });
+
+  const calculateTotal = (data: TxnData[]) => {
+    let totalBalance = 0;
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    data.forEach((item) => {
+      if (item.type === "income") totalIncome += item.amount;
+      if (item.type === "expense") totalExpense += item.amount;
+    });
+
+    totalBalance = totalIncome - totalExpense;
+
+    setTotal({
+      balance: totalBalance,
+      income: totalIncome,
+      expense: totalExpense,
+    });
+  };
 
   const loadHistory = async () => {
     try {
       const data = await AsyncStorage.getItem("transaction_history");
       if (data) {
-        setHistory(JSON.parse(data));
+        let dataObj = JSON.parse(data);
+        setHistory(dataObj);
+        calculateTotal(dataObj);
       }
     } catch (err) {
       console.error("Failed to load transactions", err);
