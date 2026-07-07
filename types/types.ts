@@ -6,3 +6,9 @@ export interface TxnData {
   date: string;
   notes: string;
 }
+
+export interface TotalData {
+  balance: number;
+  income: number;
+  expense: number;
+}
