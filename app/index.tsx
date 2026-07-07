@@ -43,6 +43,15 @@ export default function Index() {
     }, []),
   );
 
+  const formatDate = (date: string) => {
+    let dateObj = new Date(date);
+    return dateObj.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
   const onListScroll = ({
     nativeEvent,
   }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -58,7 +67,7 @@ export default function Index() {
         <View>
           <Text variant="titleMedium">{item.description}</Text>
           <Text variant="bodySmall" style={styles.itemDate}>
-            {item.date}
+            {formatDate(item.date)}
           </Text>
         </View>
 
