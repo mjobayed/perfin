@@ -11,6 +11,7 @@ import {
   AnimatedFAB,
   Appbar,
   Card,
+  Divider,
   Surface,
   Text,
   useTheme,
@@ -105,6 +106,7 @@ export default function Index() {
                 item.type === "income"
                   ? theme.colors.primary
                   : theme.colors.error,
+              fontWeight: "bold",
             }}
           >
             {item.type === "income" ? "+" + item.amount : "-" + item.amount}
@@ -119,6 +121,29 @@ export default function Index() {
       <Appbar.Header>
         <Appbar.Content title="Home" />
       </Appbar.Header>
+
+      <View style={styles.totalAmountContainer}>
+        <View>
+          <Text
+            variant="titleLarge"
+            style={{ fontWeight: "bold", color: theme.colors.secondary }}
+          >
+            Balance: {total.balance}
+          </Text>
+        </View>
+        <View style={{ gap: 5 }}>
+          <Text style={{ color: theme.colors.primary }}>
+            Income: {total.income}
+          </Text>
+          <Text style={{ color: theme.colors.error }}>
+            Expense: {total.expense}
+          </Text>
+        </View>
+      </View>
+
+      <Divider
+        style={{ backgroundColor: theme.colors.error, marginHorizontal: 12 }}
+      />
 
       <FlatList
         data={history}
@@ -159,5 +184,14 @@ const styles = StyleSheet.create({
   itemDate: {
     opacity: 0.6,
     marginTop: 2,
+  },
+
+  totalAmountContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
 });
