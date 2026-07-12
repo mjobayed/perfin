@@ -96,6 +96,14 @@ const NewTransaction = () => {
     }
   };
 
+  const handleDelete = () => {
+    console.log("Delete button pressed!");
+  };
+
+  const handleSave = () => {
+    console.log("Save button pressed!");
+  };
+
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header>
@@ -176,12 +184,22 @@ const NewTransaction = () => {
       </ScrollView>
 
       {entry === "edit" ? (
-        <Surface style={styles.bottomBarNew}>
+        <Surface style={styles.bottomBarEdit}>
           <Button
             mode="contained"
-            style={styles.addBtn}
+            style={styles.editBtn}
             contentStyle={{ height: 48 }}
-            onPress={handleAdd}
+            onPress={handleDelete}
+            buttonColor={theme.colors.error}
+            textColor={theme.colors.background}
+          >
+            Delete
+          </Button>
+          <Button
+            mode="contained"
+            style={styles.editBtn}
+            contentStyle={{ height: 48 }}
+            onPress={handleSave}
             disabled={!description || !amount}
           >
             Save
@@ -245,6 +263,19 @@ const styles = StyleSheet.create({
   addBtn: {
     borderRadius: 8,
     minWidth: 120,
+  },
+
+  bottomBarEdit: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+
+  editBtn: {
+    borderRadius: 8,
+    width: "48%",
   },
 });
 
