@@ -6,6 +6,7 @@ import {
   View,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Pressable,
 } from "react-native";
 import {
   AnimatedFAB,
@@ -94,6 +95,10 @@ export default function Index() {
     router.navigate("/transaction");
   };
 
+  const handleCardPress = (item: TxnDataType) => {
+    console.log(item);
+  };
+
   const onListScroll = ({
     nativeEvent,
   }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -104,31 +109,33 @@ export default function Index() {
   };
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => (
-    <Card mode="outlined" style={{ marginBottom: 16 }}>
-      <Card.Content style={styles.cardContent}>
-        <View>
-          <Text variant="titleMedium">{item.description}</Text>
-          <Text variant="bodySmall" style={styles.itemDate}>
-            {formatDate(item.date)}
-          </Text>
-        </View>
+    <Pressable onPress={() => handleCardPress(item)}>
+      <Card mode="outlined" style={{ marginBottom: 16 }}>
+        <Card.Content style={styles.cardContent}>
+          <View>
+            <Text variant="titleMedium">{item.description}</Text>
+            <Text variant="bodySmall" style={styles.itemDate}>
+              {formatDate(item.date)}
+            </Text>
+          </View>
 
-        <View>
-          <Text
-            variant="titleLarge"
-            style={{
-              color:
-                item.type === "income"
-                  ? theme.colors.primary
-                  : theme.colors.error,
-              fontWeight: "bold",
-            }}
-          >
-            {item.type === "income" ? "+" + item.amount : "-" + item.amount}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
+          <View>
+            <Text
+              variant="titleLarge"
+              style={{
+                color:
+                  item.type === "income"
+                    ? theme.colors.primary
+                    : theme.colors.error,
+                fontWeight: "bold",
+              }}
+            >
+              {item.type === "income" ? "+" + item.amount : "-" + item.amount}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    </Pressable>
   );
 
   return (
