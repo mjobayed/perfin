@@ -112,8 +112,21 @@ const NewTransaction = () => {
     }
   };
 
-  const handleDelete = () => {
-    console.log("Delete button pressed!");
+  const handleDelete = async () => {
+    let filteredHistory = history.filter(
+      (item) => item.txnId !== txnData.txnId,
+    );
+
+    try {
+      await AsyncStorage.setItem(
+        "transaction_history",
+        JSON.stringify(filteredHistory),
+      );
+    } catch (err) {
+      console.error("Storage Error:", err);
+    }
+
+    router.navigate("/");
   };
 
   const handleSave = () => {
