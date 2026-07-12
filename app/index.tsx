@@ -88,7 +88,7 @@ export default function Index() {
       description: "",
       amount: 0,
       type: "income",
-      date: "",
+      date: new Date().toString(),
       notes: "",
     });
     setEntryData({ entry: "new" });
