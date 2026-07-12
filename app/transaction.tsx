@@ -8,6 +8,9 @@ import {
   TextInput,
   useTheme,
   HelperText,
+  Portal,
+  Dialog,
+  Text,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
@@ -37,6 +40,7 @@ const NewTransaction = () => {
     description: "",
     amount: "",
   });
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const loadHistory = async () => {
     try {
@@ -112,6 +116,14 @@ const NewTransaction = () => {
     }
   };
 
+  const showDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const hideDialog = () => {
+    setDialogVisible(false);
+  };
+
   const handleDelete = async () => {
     let filteredHistory = history.filter(
       (item) => item.txnId !== txnData.txnId,
@@ -126,6 +138,7 @@ const NewTransaction = () => {
       console.error("Storage Error:", err);
     }
 
+    hideDialog();
     router.navigate("/");
   };
 
@@ -235,13 +248,27 @@ const NewTransaction = () => {
         </View>
       </ScrollView>
 
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+          <Dialog.Content>
+            <Text variant="bodyLarge">Delete this transaction?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancel</Button>
+            <Button onPress={handleDelete} textColor={theme.colors.error}>
+              Confirm
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       {entry === "edit" ? (
         <Surface style={styles.bottomBarEdit}>
           <Button
             mode="contained"
             style={styles.editBtn}
             contentStyle={{ height: 48 }}
-            onPress={handleDelete}
+            onPress={showDialog}
             buttonColor={theme.colors.error}
             textColor={theme.colors.background}
           >
