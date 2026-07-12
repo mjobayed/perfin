@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TxnDataType } from "@/types/types";
+import { useTxn } from "@/context/TxnContext";
 
 const NewTransaction = () => {
   const insets = useSafeAreaInsets();
@@ -27,6 +28,9 @@ const NewTransaction = () => {
     description: "",
     amount: "",
   });
+  const { entryData } = useTxn();
+  if (!entryData) return;
+  const { entry } = entryData;
 
   const saveTransaction = async () => {
     try {
@@ -91,7 +95,9 @@ const NewTransaction = () => {
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content title="New Transaction" />
+        <Appbar.Content
+          title={entry === "new" ? "New Transaction" : "Edit Transaction"}
+        />
       </Appbar.Header>
 
       <ScrollView>
