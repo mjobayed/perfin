@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
@@ -19,6 +19,7 @@ const NewTransaction = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
+  const [history, setHistory] = useState<TxnDataType[]>([]);
   const { entryData, txnData } = useTxn();
   if (!entryData) return;
   if (!txnData) return;
@@ -37,11 +38,26 @@ const NewTransaction = () => {
     amount: "",
   });
 
+  const loadHistory = async () => {
+    try {
+      const data = await AsyncStorage.getItem("transaction_history");
+      if (data) {
+        let dataObj = JSON.parse(data);
+        setHistory(dataObj);
+      }
+    } catch (err) {
+      console.error("Failed to load transactions", err);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadHistory();
+    }, []),
+  );
+
   const saveTransaction = async () => {
     try {
-      const existingData = await AsyncStorage.getItem("transaction_history");
-      const history = existingData ? JSON.parse(existingData) : [];
-
       let curId = 0;
       if (history.length !== 0) {
         let ids: number[] = [];
