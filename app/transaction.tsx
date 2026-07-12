@@ -28,8 +28,9 @@ const NewTransaction = () => {
     txnData.amount === 0 ? "" : txnData.amount.toString(),
   );
   const [txnType, setTxnType] = useState(txnData.type);
-  // TODO: fix txnDate
-  const [txnDate, setTxnDate] = useState<Date | undefined>(new Date());
+  const [txnDate, setTxnDate] = useState<Date | undefined>(
+    new Date(txnData.date),
+  );
   const [notes, setNotes] = useState(txnData.notes);
   const [errors, setErrors] = useState({
     description: "",
