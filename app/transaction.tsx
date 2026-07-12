@@ -175,17 +175,31 @@ const NewTransaction = () => {
         </View>
       </ScrollView>
 
-      <Surface style={styles.bottomBarNew}>
-        <Button
-          mode="contained"
-          style={styles.addBtn}
-          contentStyle={{ height: 48 }}
-          onPress={handleAdd}
-          disabled={!description || !amount}
-        >
-          Add
-        </Button>
-      </Surface>
+      {entry === "edit" ? (
+        <Surface style={styles.bottomBarNew}>
+          <Button
+            mode="contained"
+            style={styles.addBtn}
+            contentStyle={{ height: 48 }}
+            onPress={handleAdd}
+            disabled={!description || !amount}
+          >
+            Save
+          </Button>
+        </Surface>
+      ) : (
+        <Surface style={styles.bottomBarNew}>
+          <Button
+            mode="contained"
+            style={styles.addBtn}
+            contentStyle={{ height: 48 }}
+            onPress={handleAdd}
+            disabled={!description || !amount}
+          >
+            Add
+          </Button>
+        </Surface>
+      )}
     </Surface>
   );
 };
