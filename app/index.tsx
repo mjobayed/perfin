@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TotalDataType, TxnDataType } from "@/types/types";
+import { useTxn } from "@/context/TxnContext";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -31,6 +32,7 @@ export default function Index() {
     income: 0,
     expense: 0,
   });
+  const { setEntryData } = useTxn();
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -80,6 +82,7 @@ export default function Index() {
   };
 
   const handleNewTransaction = () => {
+    setEntryData({ entry: "new" });
     router.navigate("/new-transaction");
   };
 
