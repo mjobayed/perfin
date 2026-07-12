@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TxnData } from "@/types/types";
+import { TxnDataType } from "@/types/types";
 
 const NewTransaction = () => {
   const insets = useSafeAreaInsets();
@@ -36,7 +36,7 @@ const NewTransaction = () => {
       let curId = 0;
       if (history.length !== 0) {
         let ids: number[] = [];
-        history.forEach((line: TxnData) => {
+        history.forEach((line: TxnDataType) => {
           ids.push(line.txnId);
         });
 

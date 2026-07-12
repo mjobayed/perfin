@@ -1,4 +1,4 @@
-export interface TxnData {
+export interface TxnDataType {
   txnId: number;
   description: string;
   amount: number;
@@ -7,7 +7,7 @@ export interface TxnData {
   notes: string;
 }
 
-export interface TotalData {
+export interface TotalDataType {
   balance: number;
   income: number;
   expense: number;

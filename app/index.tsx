@@ -18,21 +18,21 @@ import {
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TotalData, TxnData } from "@/types/types";
+import { TotalDataType, TxnDataType } from "@/types/types";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
-  const [history, setHistory] = useState<TxnData[]>([]);
-  const [total, setTotal] = useState<TotalData>({
+  const [history, setHistory] = useState<TxnDataType[]>([]);
+  const [total, setTotal] = useState<TotalDataType>({
     balance: 0,
     income: 0,
     expense: 0,
   });
 
-  const calculateTotal = (data: TxnData[]) => {
+  const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
     let totalIncome = 0;
     let totalExpense = 0;
@@ -88,7 +88,7 @@ export default function Index() {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const renderTxnItem = ({ item }: { item: TxnData }) => (
+  const renderTxnItem = ({ item }: { item: TxnDataType }) => (
     <Card mode="outlined" style={{ marginBottom: 16 }}>
       <Card.Content style={styles.cardContent}>
         <View>
