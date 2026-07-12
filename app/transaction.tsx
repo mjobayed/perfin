@@ -175,7 +175,7 @@ const NewTransaction = () => {
         </View>
       </ScrollView>
 
-      <Surface style={styles.bottomBar}>
+      <Surface style={styles.bottomBarNew}>
         <Button
           mode="contained"
           style={styles.addBtn}
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
 
-  bottomBar: {
+  bottomBarNew: {
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
