@@ -19,18 +19,22 @@ const NewTransaction = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [txnType, setTxnType] = useState("income");
+  const { entryData, txnData } = useTxn();
+  if (!entryData) return;
+  if (!txnData) return;
+  const { entry } = entryData;
+  const [description, setDescription] = useState(txnData.description);
+  const [amount, setAmount] = useState(
+    txnData.amount === 0 ? "" : txnData.amount.toString(),
+  );
+  const [txnType, setTxnType] = useState(txnData.type);
+  // TODO: fix txnDate
   const [txnDate, setTxnDate] = useState<Date | undefined>(new Date());
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(txnData.notes);
   const [errors, setErrors] = useState({
     description: "",
     amount: "",
   });
-  const { entryData } = useTxn();
-  if (!entryData) return;
-  const { entry } = entryData;
 
   const saveTransaction = async () => {
     try {

@@ -32,7 +32,7 @@ export default function Index() {
     income: 0,
     expense: 0,
   });
-  const { setEntryData } = useTxn();
+  const { setEntryData, setTxnData } = useTxn();
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -82,6 +82,14 @@ export default function Index() {
   };
 
   const handleNewTransaction = () => {
+    setTxnData({
+      txnId: 0,
+      description: "",
+      amount: 0,
+      type: "income",
+      date: "",
+      notes: "",
+    });
     setEntryData({ entry: "new" });
     router.navigate("/transaction");
   };
