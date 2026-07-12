@@ -96,7 +96,16 @@ export default function Index() {
   };
 
   const handleCardPress = (item: TxnDataType) => {
-    console.log(item);
+    setTxnData({
+      txnId: item.txnId,
+      description: item.description,
+      amount: item.amount,
+      type: item.type,
+      date: item.date,
+      notes: item.notes,
+    });
+    setEntryData({ entry: "edit" });
+    router.navigate("/transaction");
   };
 
   const onListScroll = ({
