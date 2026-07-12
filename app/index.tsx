@@ -79,6 +79,10 @@ export default function Index() {
     });
   };
 
+  const handleNewTransaction = () => {
+    router.navigate("/new-transaction");
+  };
+
   const onListScroll = ({
     nativeEvent,
   }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -157,7 +161,7 @@ export default function Index() {
         icon={"plus"}
         label={"New Transaction"}
         extended={isExtended}
-        onPress={() => router.navigate("/new-transaction")}
+        onPress={handleNewTransaction}
         animateFrom={"right"}
         iconMode={"dynamic"}
         style={styles.fabStyle}
