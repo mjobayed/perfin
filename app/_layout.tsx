@@ -8,10 +8,7 @@ export default function RootLayout() {
       <TxnProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="new-transaction"
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="transaction" options={{ headerShown: false }} />
         </Stack>
       </TxnProvider>
     </PaperProvider>

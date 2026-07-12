@@ -83,7 +83,7 @@ export default function Index() {
 
   const handleNewTransaction = () => {
     setEntryData({ entry: "new" });
-    router.navigate("/new-transaction");
+    router.navigate("/transaction");
   };
 
   const onListScroll = ({
