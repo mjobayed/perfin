@@ -7,6 +7,10 @@ export interface TxnDataType {
   notes: string;
 }
 
+export interface EntryType {
+  entry: "new" | "edit";
+}
+
 export interface TotalDataType {
   balance: number;
   income: number;
