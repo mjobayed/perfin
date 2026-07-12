@@ -129,8 +129,31 @@ const NewTransaction = () => {
     router.navigate("/");
   };
 
-  const handleSave = () => {
-    console.log("Save button pressed!");
+  const handleSave = async () => {
+    let editedHistory = history.map((item) => {
+      if (item.txnId === txnData.txnId) {
+        return {
+          txnId: txnData.txnId,
+          description,
+          amount: Number(amount),
+          type: txnType,
+          date: txnDate,
+          notes,
+        };
+      }
+      return item;
+    });
+
+    try {
+      await AsyncStorage.setItem(
+        "transaction_history",
+        JSON.stringify(editedHistory),
+      );
+    } catch (err) {
+      console.error("Storage Error:", err);
+    }
+
+    router.navigate("/");
   };
 
   return (
