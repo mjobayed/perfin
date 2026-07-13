@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
@@ -8,35 +8,64 @@ import {
   TextInput,
   useTheme,
   HelperText,
+  Portal,
+  Dialog,
+  Text,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TxnData } from "@/types/types";
+import { TxnDataType } from "@/types/types";
+import { useTxn } from "@/context/TxnContext";
 
 const NewTransaction = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [txnType, setTxnType] = useState("income");
-  const [txnDate, setTxnDate] = useState<Date | undefined>(new Date());
-  const [notes, setNotes] = useState("");
+  const [history, setHistory] = useState<TxnDataType[]>([]);
+  const { entryData, txnData } = useTxn();
+  if (!entryData) return;
+  if (!txnData) return;
+  const { entry } = entryData;
+  const [description, setDescription] = useState(txnData.description);
+  const [amount, setAmount] = useState(
+    txnData.amount === 0 ? "" : txnData.amount.toString(),
+  );
+  const [txnType, setTxnType] = useState(txnData.type);
+  const [txnDate, setTxnDate] = useState<Date | undefined>(
+    new Date(txnData.date),
+  );
+  const [notes, setNotes] = useState(txnData.notes);
   const [errors, setErrors] = useState({
     description: "",
     amount: "",
   });
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  const loadHistory = async () => {
+    try {
+      const data = await AsyncStorage.getItem("transaction_history");
+      if (data) {
+        let dataObj = JSON.parse(data);
+        setHistory(dataObj);
+      }
+    } catch (err) {
+      console.error("Failed to load transactions", err);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadHistory();
+    }, []),
+  );
 
   const saveTransaction = async () => {
     try {
-      const existingData = await AsyncStorage.getItem("transaction_history");
-      const history = existingData ? JSON.parse(existingData) : [];
-
       let curId = 0;
       if (history.length !== 0) {
         let ids: number[] = [];
-        history.forEach((line: TxnData) => {
+        history.forEach((line: TxnDataType) => {
           ids.push(line.txnId);
         });
 
@@ -87,11 +116,66 @@ const NewTransaction = () => {
     }
   };
 
+  const showDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const hideDialog = () => {
+    setDialogVisible(false);
+  };
+
+  const handleDelete = async () => {
+    let filteredHistory = history.filter(
+      (item) => item.txnId !== txnData.txnId,
+    );
+
+    try {
+      await AsyncStorage.setItem(
+        "transaction_history",
+        JSON.stringify(filteredHistory),
+      );
+    } catch (err) {
+      console.error("Storage Error:", err);
+    }
+
+    hideDialog();
+    router.navigate("/");
+  };
+
+  const handleSave = async () => {
+    let editedHistory = history.map((item) => {
+      if (item.txnId === txnData.txnId) {
+        return {
+          txnId: txnData.txnId,
+          description,
+          amount: Number(amount),
+          type: txnType,
+          date: txnDate,
+          notes,
+        };
+      }
+      return item;
+    });
+
+    try {
+      await AsyncStorage.setItem(
+        "transaction_history",
+        JSON.stringify(editedHistory),
+      );
+    } catch (err) {
+      console.error("Storage Error:", err);
+    }
+
+    router.navigate("/");
+  };
+
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content title="New Transaction" />
+        <Appbar.Content
+          title={entry === "new" ? "New Transaction" : "Edit Transaction"}
+        />
       </Appbar.Header>
 
       <ScrollView>
@@ -164,17 +248,55 @@ const NewTransaction = () => {
         </View>
       </ScrollView>
 
-      <Surface style={styles.bottomBar}>
-        <Button
-          mode="contained"
-          style={styles.addBtn}
-          contentStyle={{ height: 48 }}
-          onPress={handleAdd}
-          disabled={!description || !amount}
-        >
-          Add
-        </Button>
-      </Surface>
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+          <Dialog.Content>
+            <Text variant="bodyLarge">Delete this transaction?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancel</Button>
+            <Button onPress={handleDelete} textColor={theme.colors.error}>
+              Confirm
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {entry === "edit" ? (
+        <Surface style={styles.bottomBarEdit}>
+          <Button
+            mode="contained"
+            style={styles.editBtn}
+            contentStyle={{ height: 48 }}
+            onPress={showDialog}
+            buttonColor={theme.colors.error}
+            textColor={theme.colors.background}
+          >
+            Delete
+          </Button>
+          <Button
+            mode="contained"
+            style={styles.editBtn}
+            contentStyle={{ height: 48 }}
+            onPress={handleSave}
+            disabled={!description || !amount}
+          >
+            Save
+          </Button>
+        </Surface>
+      ) : (
+        <Surface style={styles.bottomBarNew}>
+          <Button
+            mode="contained"
+            style={styles.addBtn}
+            contentStyle={{ height: 48 }}
+            onPress={handleAdd}
+            disabled={!description || !amount}
+          >
+            Add
+          </Button>
+        </Surface>
+      )}
     </Surface>
   );
 };
@@ -212,7 +334,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
 
-  bottomBar: {
+  bottomBarNew: {
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
@@ -220,6 +342,19 @@ const styles = StyleSheet.create({
   addBtn: {
     borderRadius: 8,
     minWidth: 120,
+  },
+
+  bottomBarEdit: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+
+  editBtn: {
+    borderRadius: 8,
+    width: "48%",
   },
 });
 

@@ -6,6 +6,7 @@ import {
   View,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Pressable,
 } from "react-native";
 import {
   AnimatedFAB,
@@ -18,21 +19,23 @@ import {
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TotalData, TxnData } from "@/types/types";
+import { TotalDataType, TxnDataType } from "@/types/types";
+import { useTxn } from "@/context/TxnContext";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
-  const [history, setHistory] = useState<TxnData[]>([]);
-  const [total, setTotal] = useState<TotalData>({
+  const [history, setHistory] = useState<TxnDataType[]>([]);
+  const [total, setTotal] = useState<TotalDataType>({
     balance: 0,
     income: 0,
     expense: 0,
   });
+  const { setEntryData, setTxnData } = useTxn();
 
-  const calculateTotal = (data: TxnData[]) => {
+  const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
     let totalIncome = 0;
     let totalExpense = 0;
@@ -79,6 +82,32 @@ export default function Index() {
     });
   };
 
+  const handleNewTransaction = () => {
+    setTxnData({
+      txnId: 0,
+      description: "",
+      amount: 0,
+      type: "income",
+      date: new Date().toString(),
+      notes: "",
+    });
+    setEntryData({ entry: "new" });
+    router.navigate("/transaction");
+  };
+
+  const handleCardPress = (item: TxnDataType) => {
+    setTxnData({
+      txnId: item.txnId,
+      description: item.description,
+      amount: item.amount,
+      type: item.type,
+      date: item.date,
+      notes: item.notes,
+    });
+    setEntryData({ entry: "edit" });
+    router.navigate("/transaction");
+  };
+
   const onListScroll = ({
     nativeEvent,
   }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -88,32 +117,34 @@ export default function Index() {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const renderTxnItem = ({ item }: { item: TxnData }) => (
-    <Card mode="outlined" style={{ marginBottom: 16 }}>
-      <Card.Content style={styles.cardContent}>
-        <View>
-          <Text variant="titleMedium">{item.description}</Text>
-          <Text variant="bodySmall" style={styles.itemDate}>
-            {formatDate(item.date)}
-          </Text>
-        </View>
+  const renderTxnItem = ({ item }: { item: TxnDataType }) => (
+    <Pressable onPress={() => handleCardPress(item)}>
+      <Card mode="outlined" style={{ marginBottom: 16 }}>
+        <Card.Content style={styles.cardContent}>
+          <View>
+            <Text variant="titleMedium">{item.description}</Text>
+            <Text variant="bodySmall" style={styles.itemDate}>
+              {formatDate(item.date)}
+            </Text>
+          </View>
 
-        <View>
-          <Text
-            variant="titleLarge"
-            style={{
-              color:
-                item.type === "income"
-                  ? theme.colors.primary
-                  : theme.colors.error,
-              fontWeight: "bold",
-            }}
-          >
-            {item.type === "income" ? "+" + item.amount : "-" + item.amount}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
+          <View>
+            <Text
+              variant="titleLarge"
+              style={{
+                color:
+                  item.type === "income"
+                    ? theme.colors.primary
+                    : theme.colors.error,
+                fontWeight: "bold",
+              }}
+            >
+              {item.type === "income" ? "+" + item.amount : "-" + item.amount}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    </Pressable>
   );
 
   return (
@@ -157,7 +188,7 @@ export default function Index() {
         icon={"plus"}
         label={"New Transaction"}
         extended={isExtended}
-        onPress={() => router.navigate("/new-transaction")}
+        onPress={handleNewTransaction}
         animateFrom={"right"}
         iconMode={"dynamic"}
         style={styles.fabStyle}
