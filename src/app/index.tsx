@@ -117,41 +117,41 @@ export default function Index() {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const renderTxnItem = ({ item }: { item: TxnDataType }) => (
-    <Pressable onPress={() => handleCardPress(item)}>
-      <Card
-        mode="contained"
-        style={[
-          styles.txnCard,
-          { backgroundColor: theme.colors.elevation.level2 },
-        ]}
-      >
-        <Card.Content style={styles.cardContent}>
-          <View>
-            <Text variant="titleMedium">{item.description}</Text>
-            <Text variant="bodySmall" style={styles.itemDate}>
-              {formatDate(item.date)}
-            </Text>
-          </View>
+  const renderTxnItem = ({ item }: { item: TxnDataType }) => {
+    const isIncome = item.type === "income";
+    return (
+      <Pressable onPress={() => handleCardPress(item)}>
+        <Card
+          mode="contained"
+          style={[
+            styles.txnCard,
+            { backgroundColor: theme.colors.elevation.level2 },
+          ]}
+        >
+          <Card.Content style={styles.cardContent}>
+            <View>
+              <Text variant="titleMedium">{item.description}</Text>
+              <Text variant="bodySmall" style={styles.itemDate}>
+                {formatDate(item.date)}
+              </Text>
+            </View>
 
-          <View>
-            <Text
-              variant="titleLarge"
-              style={{
-                color:
-                  item.type === "income"
-                    ? theme.colors.primary
-                    : theme.colors.error,
-                fontWeight: "bold",
-              }}
-            >
-              {item.type === "income" ? "+" + item.amount : "-" + item.amount}
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
-    </Pressable>
-  );
+            <View>
+              <Text
+                variant="titleLarge"
+                style={{
+                  color: isIncome ? theme.colors.primary : theme.colors.error,
+                  fontWeight: "bold",
+                }}
+              >
+                {isIncome ? "+" + item.amount : "-" + item.amount}
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </Pressable>
+    );
+  };
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
