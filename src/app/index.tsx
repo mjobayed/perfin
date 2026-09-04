@@ -11,8 +11,9 @@ import {
 import {
   AnimatedFAB,
   Appbar,
+  Avatar,
   Card,
-  Divider,
+  Icon,
   Surface,
   Text,
   useTheme,
@@ -117,70 +118,166 @@ export default function Index() {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const renderTxnItem = ({ item }: { item: TxnDataType }) => (
-    <Pressable onPress={() => handleCardPress(item)}>
-      <Card mode="outlined" style={{ marginBottom: 16 }}>
-        <Card.Content style={styles.cardContent}>
-          <View>
-            <Text variant="titleMedium">{item.description}</Text>
-            <Text variant="bodySmall" style={styles.itemDate}>
-              {formatDate(item.date)}
-            </Text>
-          </View>
-
-          <View>
+  const renderTxnItem = ({ item }: { item: TxnDataType }) => {
+    const isIncome = item.type === "income";
+    return (
+      <Pressable onPress={() => handleCardPress(item)}>
+        <Card
+          mode="contained"
+          style={[
+            styles.txnCard,
+            { backgroundColor: theme.colors.elevation.level2 },
+          ]}
+        >
+          <Card.Content style={styles.cardContent}>
+            <View style={styles.txnLeft}>
+              <Avatar.Icon
+                size={40}
+                icon={isIncome ? "arrow-top-right" : "arrow-bottom-right"}
+                color={isIncome ? theme.colors.primary : theme.colors.error}
+                style={{
+                  backgroundColor: isIncome
+                    ? theme.colors.primaryContainer
+                    : theme.colors.errorContainer,
+                }}
+              />
+              <View style={{ flexShrink: 1 }}>
+                <Text variant="titleMedium">{item.description}</Text>
+                <Text variant="bodySmall" style={styles.itemDate}>
+                  {formatDate(item.date)}
+                </Text>
+              </View>
+            </View>
             <Text
               variant="titleLarge"
               style={{
-                color:
-                  item.type === "income"
-                    ? theme.colors.primary
-                    : theme.colors.error,
+                color: isIncome ? theme.colors.primary : theme.colors.error,
                 fontWeight: "bold",
               }}
             >
-              {item.type === "income" ? "+" + item.amount : "-" + item.amount}
+              {isIncome ? "+" + item.amount : "-" + item.amount}
             </Text>
-          </View>
-        </Card.Content>
-      </Card>
-    </Pressable>
+          </Card.Content>
+        </Card>
+      </Pressable>
+    );
+  };
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Icon
+        source="tray-arrow-down"
+        size={48}
+        color={theme.colors.onSurfaceVariant}
+      />
+      <Text
+        variant="titleMedium"
+        style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
+      >
+        No transactions yet
+      </Text>
+      <Text
+        variant="bodyMedium"
+        style={{
+          color: theme.colors.onSurfaceVariant,
+          marginTop: 4,
+          textAlign: "center",
+        }}
+      >
+        Tap "New Transaction" to add your first income or expense.
+      </Text>
+    </View>
   );
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
-      <Appbar.Header>
+      <Appbar.Header elevated>
         <Appbar.Content title="Home" />
       </Appbar.Header>
 
-      <View style={styles.totalAmountContainer}>
-        <View>
-          <Text
-            variant="titleLarge"
-            style={{ fontWeight: "bold", color: theme.colors.secondary }}
-          >
-            Balance: {total.balance}
-          </Text>
-        </View>
-        <View style={{ gap: 5 }}>
-          <Text style={{ color: theme.colors.primary }}>
-            Income: {total.income}
-          </Text>
-          <Text style={{ color: theme.colors.error }}>
-            Expense: {total.expense}
-          </Text>
-        </View>
-      </View>
+      <Surface
+        mode="flat"
+        style={[
+          styles.summaryCard,
+          { backgroundColor: theme.colors.elevation.level2 },
+        ]}
+      >
+        <Text
+          variant="labelLarge"
+          style={{ color: theme.colors.onSurfaceVariant }}
+        >
+          Total Balance
+        </Text>
+        <Text
+          variant="displaySmall"
+          style={{ fontWeight: "700", color: theme.colors.onSurface }}
+        >
+          {total.balance}
+        </Text>
 
-      <Divider
-        style={{ backgroundColor: theme.colors.error, marginHorizontal: 12 }}
-      />
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryPill}>
+            <Icon
+              source="arrow-up-bold-circle"
+              size={20}
+              color={theme.colors.primary}
+            />
+            <View>
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Income
+              </Text>
+              <Text
+                variant="titleMedium"
+                style={{ color: theme.colors.primary, fontWeight: "600" }}
+              >
+                {total.income}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.summaryPill}>
+            <Icon
+              source="arrow-down-bold-circle"
+              size={20}
+              color={theme.colors.error}
+            />
+            <View>
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Expense
+              </Text>
+              <Text
+                variant="titleMedium"
+                style={{ color: theme.colors.error, fontWeight: "600" }}
+              >
+                {total.expense}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Surface>
+
+      <Text
+        variant="titleSmall"
+        style={[styles.sectionLabel, { color: theme.colors.onSurfaceVariant }]}
+      >
+        Recent Transactions
+      </Text>
 
       <FlatList
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
-        contentContainerStyle={{ padding: 16, paddingBottom: 110 }}
+        contentContainerStyle={[
+          styles.listContainer,
+          history.length === 0 && styles.listContentEmpty,
+        ]}
+        ListEmptyComponent={renderEmptyState}
         onScroll={onListScroll}
       />
 
@@ -217,12 +314,62 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  totalAmountContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  sectionLabel: {
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
+
+  summaryCard: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    padding: 20,
+    borderRadius: 20,
+    gap: 4,
+  },
+
+  summaryRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 16,
+  },
+
+  summaryPill: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: "rgba(127,  127, 127, 0.08)",
+  },
+
+  txnCard: {
+    marginBottom: 16,
+    borderRadius: 16,
+  },
+
+  txnLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flexShrink: 1,
+  },
+
+  listContainer: {
+    padding: 16,
+    paddingTop: 4,
+    paddingBottom: 110,
+  },
+
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 40,
+  },
+
+  listContentEmpty: { flexGrow: 1 },
 });

@@ -11,6 +11,7 @@ import {
   Portal,
   Dialog,
   Text,
+  SegmentedButtons,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
@@ -171,7 +172,7 @@ const NewTransaction = () => {
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
-      <Appbar.Header>
+      <Appbar.Header elevated>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content
           title={entry === "new" ? "New Transaction" : "Edit Transaction"}
@@ -180,10 +181,30 @@ const NewTransaction = () => {
 
       <ScrollView>
         <View style={styles.container}>
+          <SegmentedButtons
+            value={txnType}
+            onValueChange={(value) => setTxnType(value as "income" | "expense")}
+            style={{ marginBottom: 20 }}
+            buttons={[
+              {
+                value: "income",
+                label: "Income",
+                icon: "arrow-top-right",
+                checkedColor: theme.colors.primary,
+              },
+              {
+                value: "expense",
+                label: "Expense",
+                icon: "arrow-bottom-right",
+                checkedColor: theme.colors.error,
+              },
+            ]}
+          />
           <TextInput
             mode="outlined"
             label={"Description"}
             value={description}
+            left={<TextInput.Icon icon="text" />}
             onChangeText={(text) => {
               setDescription(text);
               if (text) setErrors((prev) => ({ ...prev, description: "" }));
@@ -201,6 +222,7 @@ const NewTransaction = () => {
               mode="outlined"
               label={"Amount"}
               value={amount}
+              left={<TextInput.Icon icon="currency-bdt" />}
               keyboardType="number-pad"
               onChangeText={(text) => {
                 setAmount(text.trim());
@@ -209,25 +231,6 @@ const NewTransaction = () => {
               style={{ flex: 1 }}
               error={!!errors.amount}
             />
-
-            <View style={styles.txnBtnContainer}>
-              <Button
-                mode={txnType === "income" ? "contained" : "outlined"}
-                onPress={() => setTxnType("income")}
-                style={styles.incomeBtn}
-              >
-                Income
-              </Button>
-              <Button
-                mode="outlined"
-                onPress={() => setTxnType("expense")}
-                style={styles.expenseBtn}
-                buttonColor={txnType === "expense" ? theme.colors.error : ""}
-                textColor={txnType === "expense" ? theme.colors.background : ""}
-              >
-                Expense
-              </Button>
-            </View>
           </View>
           {errors.amount && (
             <HelperText type="error" visible={!!errors.amount}>
@@ -242,8 +245,9 @@ const NewTransaction = () => {
             multiline={true}
             numberOfLines={100}
             value={notes}
+            left={<TextInput.Icon icon="note-text-outline" />}
             onChangeText={(text) => setNotes(text)}
-            style={{ height: "55%" }}
+            style={{ minHeight: 200 }}
           />
         </View>
       </ScrollView>
@@ -271,6 +275,7 @@ const NewTransaction = () => {
             onPress={showDialog}
             buttonColor={theme.colors.error}
             textColor={theme.colors.background}
+            icon="delete-outline"
           >
             Delete
           </Button>
@@ -280,6 +285,7 @@ const NewTransaction = () => {
             contentStyle={{ height: 48 }}
             onPress={handleSave}
             disabled={!description || !amount}
+            icon="check"
           >
             Save
           </Button>
@@ -292,6 +298,7 @@ const NewTransaction = () => {
             contentStyle={{ height: 48 }}
             onPress={handleAdd}
             disabled={!description || !amount}
+            icon="plus"
           >
             Add
           </Button>
@@ -307,31 +314,12 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    gap: 8,
+    gap: 4,
   },
 
   amountContainer: {
     flexDirection: "row",
     gap: 8,
-  },
-
-  txnBtnContainer: {
-    marginTop: 4,
-    marginBottom: 4,
-  },
-
-  incomeBtn: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  expenseBtn: {
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
 
   bottomBarNew: {
