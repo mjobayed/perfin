@@ -12,7 +12,6 @@ import {
   AnimatedFAB,
   Appbar,
   Card,
-  Divider,
   Surface,
   Text,
   useTheme,
@@ -171,10 +170,6 @@ export default function Index() {
           </Text>
         </View>
       </View>
-
-      <Divider
-        style={{ backgroundColor: theme.colors.error, marginHorizontal: 12 }}
-      />
 
       <FlatList
         data={history}
