@@ -309,12 +309,12 @@ export default function Index() {
       </Text>
 
       <FlatList
-        data={history}
+        data={filteredHistory}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
         contentContainerStyle={[
           styles.listContainer,
-          history.length === 0 && styles.listContentEmpty,
+          filteredHistory.length === 0 && styles.listContentEmpty,
         ]}
         ListEmptyComponent={renderEmptyState}
         onScroll={onListScroll}
