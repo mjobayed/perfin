@@ -35,6 +35,8 @@ export default function Index() {
     expense: 0,
   });
   const { setEntryData, setTxnData } = useTxn();
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -116,6 +118,15 @@ export default function Index() {
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
     setIsExtended(currentScrollPosition <= 0);
+  };
+
+  const openSearch = () => {
+    setIsSearching(true);
+  };
+
+  const closeSearch = () => {
+    setIsSearching(false);
+    setSearchQuery("");
   };
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
