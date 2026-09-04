@@ -121,10 +121,10 @@ export default function Index() {
     <Pressable onPress={() => handleCardPress(item)}>
       <Card
         mode="contained"
-        style={{
-          marginBottom: 16,
-          backgroundColor: theme.colors.elevation.level2,
-        }}
+        style={[
+          styles.txnCard,
+          { backgroundColor: theme.colors.elevation.level2 },
+        ]}
       >
         <Card.Content style={styles.cardContent}>
           <View>
@@ -304,5 +304,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 14,
     backgroundColor: "rgba(127,  127, 127, 0.08)",
+  },
+
+  txnCard: {
+    marginBottom: 16,
+    borderRadius: 16,
   },
 });
