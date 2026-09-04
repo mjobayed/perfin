@@ -12,6 +12,7 @@ import {
   AnimatedFAB,
   Appbar,
   Card,
+  Icon,
   Surface,
   Text,
   useTheme,
@@ -152,24 +153,72 @@ export default function Index() {
         <Appbar.Content title="Home" />
       </Appbar.Header>
 
-      <View style={styles.totalAmountContainer}>
-        <View>
-          <Text
-            variant="titleLarge"
-            style={{ fontWeight: "bold", color: theme.colors.secondary }}
-          >
-            Balance: {total.balance}
-          </Text>
+      <Surface
+        mode="flat"
+        style={[
+          styles.summaryCard,
+          { backgroundColor: theme.colors.elevation.level2 },
+        ]}
+      >
+        <Text
+          variant="labelLarge"
+          style={{ color: theme.colors.onSurfaceVariant }}
+        >
+          Total Balance
+        </Text>
+        <Text
+          variant="displaySmall"
+          style={{ fontWeight: "700", color: theme.colors.onSurface }}
+        >
+          {total.balance}
+        </Text>
+
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryPill}>
+            <Icon
+              source="arrow-up-bold-circle"
+              size={20}
+              color={theme.colors.primary}
+            />
+            <View>
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Income
+              </Text>
+              <Text
+                variant="titleMedium"
+                style={{ color: theme.colors.primary, fontWeight: "600" }}
+              >
+                {total.income}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.summaryPill}>
+            <Icon
+              source="arrow-down-bold-circle"
+              size={20}
+              color={theme.colors.error}
+            />
+            <View>
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Expense
+              </Text>
+              <Text
+                variant="titleMedium"
+                style={{ color: theme.colors.error, fontWeight: "600" }}
+              >
+                {total.expense}
+              </Text>
+            </View>
+          </View>
         </View>
-        <View style={{ gap: 5 }}>
-          <Text style={{ color: theme.colors.primary }}>
-            Income: {total.income}
-          </Text>
-          <Text style={{ color: theme.colors.error }}>
-            Expense: {total.expense}
-          </Text>
-        </View>
-      </View>
+      </Surface>
 
       <Text
         variant="titleSmall"
@@ -219,18 +268,35 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  totalAmountContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-
   sectionLabel: {
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 4,
+  },
+
+  summaryCard: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    padding: 20,
+    borderRadius: 20,
+    gap: 4,
+  },
+
+  summaryRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 16,
+  },
+
+  summaryPill: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: "rgba(127,  127, 127, 0.08)",
   },
 });
