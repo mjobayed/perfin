@@ -171,6 +171,13 @@ export default function Index() {
         </View>
       </View>
 
+      <Text
+        variant="titleSmall"
+        style={[styles.sectionLabel, { color: theme.colors.onSurfaceVariant }]}
+      >
+        Recent Transactions
+      </Text>
+
       <FlatList
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
@@ -219,5 +226,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+
+  sectionLabel: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
 });
