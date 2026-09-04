@@ -1,5 +1,5 @@
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -129,6 +129,16 @@ export default function Index() {
     setIsSearching(false);
     setSearchQuery("");
   };
+
+  const filteredHistory = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return history;
+
+    return history.filter((item) => {
+      item.description.toLowerCase().includes(query) ||
+        item.notes.toLowerCase().includes(query);
+    });
+  }, [history, searchQuery]);
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
     const isIncome = item.type === "income";
