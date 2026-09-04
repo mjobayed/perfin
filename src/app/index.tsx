@@ -119,7 +119,13 @@ export default function Index() {
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => (
     <Pressable onPress={() => handleCardPress(item)}>
-      <Card mode="outlined" style={{ marginBottom: 16 }}>
+      <Card
+        mode="contained"
+        style={{
+          marginBottom: 16,
+          backgroundColor: theme.colors.elevation.level2,
+        }}
+      >
         <Card.Content style={styles.cardContent}>
           <View>
             <Text variant="titleMedium">{item.description}</Text>
