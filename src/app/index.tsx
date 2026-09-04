@@ -163,6 +163,32 @@ export default function Index() {
     );
   };
 
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Icon
+        source="tray-arrow-down"
+        size={48}
+        color={theme.colors.onSurfaceVariant}
+      />
+      <Text
+        variant="titleMedium"
+        style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
+      >
+        No transactions yet
+      </Text>
+      <Text
+        variant="bodyMedium"
+        style={{
+          color: theme.colors.onSurfaceVariant,
+          marginTop: 4,
+          textAlign: "center",
+        }}
+      >
+        Tap "New Transaction" to add your first income or expense.
+      </Text>
+    </View>
+  );
+
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header elevated>
@@ -247,7 +273,11 @@ export default function Index() {
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={[
+          styles.listContainer,
+          history.length === 0 && styles.listContentEmpty,
+        ]}
+        ListEmptyComponent={renderEmptyState}
         onScroll={onListScroll}
       />
 
@@ -333,4 +363,13 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 110,
   },
+
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 40,
+  },
+
+  listContentEmpty: { flexGrow: 1 },
 });
