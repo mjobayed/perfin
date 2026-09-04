@@ -149,7 +149,7 @@ export default function Index() {
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
-      <Appbar.Header>
+      <Appbar.Header elevated>
         <Appbar.Content title="Home" />
       </Appbar.Header>
 

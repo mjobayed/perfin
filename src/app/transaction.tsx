@@ -171,7 +171,7 @@ const NewTransaction = () => {
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
-      <Appbar.Header>
+      <Appbar.Header elevated>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content
           title={entry === "new" ? "New Transaction" : "Edit Transaction"}
