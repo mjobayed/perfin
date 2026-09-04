@@ -134,10 +134,11 @@ export default function Index() {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return history;
 
-    return history.filter((item) => {
-      item.description.toLowerCase().includes(query) ||
-        item.notes.toLowerCase().includes(query);
-    });
+    return history.filter(
+      (item) =>
+        item.description.toLowerCase().includes(query) ||
+        item.notes.toLowerCase().includes(query),
+    );
   }, [history, searchQuery]);
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
