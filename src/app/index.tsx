@@ -11,6 +11,7 @@ import {
 import {
   AnimatedFAB,
   Appbar,
+  Avatar,
   Card,
   Icon,
   Surface,
@@ -129,24 +130,33 @@ export default function Index() {
           ]}
         >
           <Card.Content style={styles.cardContent}>
-            <View>
-              <Text variant="titleMedium">{item.description}</Text>
-              <Text variant="bodySmall" style={styles.itemDate}>
-                {formatDate(item.date)}
-              </Text>
-            </View>
-
-            <View>
-              <Text
-                variant="titleLarge"
+            <View style={styles.txnLeft}>
+              <Avatar.Icon
+                size={40}
+                icon={isIncome ? "arrow-top-right" : "arrow-bottom-right"}
+                color={isIncome ? theme.colors.primary : theme.colors.error}
                 style={{
-                  color: isIncome ? theme.colors.primary : theme.colors.error,
-                  fontWeight: "bold",
+                  backgroundColor: isIncome
+                    ? theme.colors.primaryContainer
+                    : theme.colors.errorContainer,
                 }}
-              >
-                {isIncome ? "+" + item.amount : "-" + item.amount}
-              </Text>
+              />
+              <View style={{ flexShrink: 1 }}>
+                <Text variant="titleMedium">{item.description}</Text>
+                <Text variant="bodySmall" style={styles.itemDate}>
+                  {formatDate(item.date)}
+                </Text>
+              </View>
             </View>
+            <Text
+              variant="titleLarge"
+              style={{
+                color: isIncome ? theme.colors.primary : theme.colors.error,
+                fontWeight: "bold",
+              }}
+            >
+              {isIncome ? "+" + item.amount : "-" + item.amount}
+            </Text>
           </Card.Content>
         </Card>
       </Pressable>
@@ -309,5 +319,12 @@ const styles = StyleSheet.create({
   txnCard: {
     marginBottom: 16,
     borderRadius: 16,
+  },
+
+  txnLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flexShrink: 1,
   },
 });
