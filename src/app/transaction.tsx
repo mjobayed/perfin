@@ -244,7 +244,7 @@ const NewTransaction = () => {
             numberOfLines={100}
             value={notes}
             onChangeText={(text) => setNotes(text)}
-            style={{ height: "55%" }}
+            style={{ minHeight: 200 }}
           />
         </View>
       </ScrollView>
