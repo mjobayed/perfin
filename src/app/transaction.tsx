@@ -204,6 +204,7 @@ const NewTransaction = () => {
             mode="outlined"
             label={"Description"}
             value={description}
+            left={<TextInput.Icon icon="text" />}
             onChangeText={(text) => {
               setDescription(text);
               if (text) setErrors((prev) => ({ ...prev, description: "" }));
@@ -221,6 +222,7 @@ const NewTransaction = () => {
               mode="outlined"
               label={"Amount"}
               value={amount}
+              left={<TextInput.Icon icon="currency-bdt" />}
               keyboardType="number-pad"
               onChangeText={(text) => {
                 setAmount(text.trim());
@@ -243,6 +245,7 @@ const NewTransaction = () => {
             multiline={true}
             numberOfLines={100}
             value={notes}
+            left={<TextInput.Icon icon="note-text-outline" />}
             onChangeText={(text) => setNotes(text)}
             style={{ minHeight: 200 }}
           />
