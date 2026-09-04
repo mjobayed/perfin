@@ -14,6 +14,7 @@ import {
   Avatar,
   Card,
   Icon,
+  Searchbar,
   Surface,
   Text,
   useTheme,
@@ -203,7 +204,21 @@ export default function Index() {
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header elevated>
-        <Appbar.Content title="Home" />
+        {isSearching ? (
+          <Searchbar
+            placeholder="Search Transactions"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            icon="arrow-left"
+            onIconPress={closeSearch}
+            autoFocus
+          />
+        ) : (
+          <>
+            <Appbar.Content style={{ marginLeft: 10 }} title="Home" />
+            <Appbar.Action icon="magnify" onPress={openSearch} />
+          </>
+        )}
       </Appbar.Header>
 
       <Surface
