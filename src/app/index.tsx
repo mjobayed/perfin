@@ -247,7 +247,7 @@ export default function Index() {
         data={history}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
-        contentContainerStyle={{ padding: 16, paddingBottom: 110 }}
+        contentContainerStyle={styles.listContainer}
         onScroll={onListScroll}
       />
 
@@ -326,5 +326,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     flexShrink: 1,
+  },
+
+  listContainer: {
+    padding: 16,
+    paddingTop: 4,
+    paddingBottom: 110,
   },
 });
