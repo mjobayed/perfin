@@ -294,7 +294,7 @@ export default function Index() {
         variant="titleSmall"
         style={[styles.sectionLabel, { color: theme.colors.onSurfaceVariant }]}
       >
-        Recent Transactions
+        {isSearching ? "Search Results" : "Recent Transactions"}
       </Text>
 
       <FlatList
