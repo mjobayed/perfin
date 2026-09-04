@@ -11,6 +11,7 @@ import {
   Portal,
   Dialog,
   Text,
+  SegmentedButtons,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "@/components/DatePicker";
@@ -180,6 +181,25 @@ const NewTransaction = () => {
 
       <ScrollView>
         <View style={styles.container}>
+          <SegmentedButtons
+            value={txnType}
+            onValueChange={(value) => setTxnType(value as "income" | "expense")}
+            style={{ marginBottom: 20 }}
+            buttons={[
+              {
+                value: "income",
+                label: "Income",
+                icon: "arrow-top-right",
+                checkedColor: theme.colors.primary,
+              },
+              {
+                value: "expense",
+                label: "Expense",
+                icon: "arrow-bottom-right",
+                checkedColor: theme.colors.error,
+              },
+            ]}
+          />
           <TextInput
             mode="outlined"
             label={"Description"}
@@ -209,25 +229,6 @@ const NewTransaction = () => {
               style={{ flex: 1 }}
               error={!!errors.amount}
             />
-
-            <View style={styles.txnBtnContainer}>
-              <Button
-                mode={txnType === "income" ? "contained" : "outlined"}
-                onPress={() => setTxnType("income")}
-                style={styles.incomeBtn}
-              >
-                Income
-              </Button>
-              <Button
-                mode="outlined"
-                onPress={() => setTxnType("expense")}
-                style={styles.expenseBtn}
-                buttonColor={txnType === "expense" ? theme.colors.error : ""}
-                textColor={txnType === "expense" ? theme.colors.background : ""}
-              >
-                Expense
-              </Button>
-            </View>
           </View>
           {errors.amount && (
             <HelperText type="error" visible={!!errors.amount}>
@@ -313,25 +314,6 @@ const styles = StyleSheet.create({
   amountContainer: {
     flexDirection: "row",
     gap: 8,
-  },
-
-  txnBtnContainer: {
-    marginTop: 4,
-    marginBottom: 4,
-  },
-
-  incomeBtn: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  expenseBtn: {
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
 
   bottomBarNew: {
