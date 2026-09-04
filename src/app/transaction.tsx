@@ -275,6 +275,7 @@ const NewTransaction = () => {
             onPress={showDialog}
             buttonColor={theme.colors.error}
             textColor={theme.colors.background}
+            icon="delete-outline"
           >
             Delete
           </Button>
@@ -284,6 +285,7 @@ const NewTransaction = () => {
             contentStyle={{ height: 48 }}
             onPress={handleSave}
             disabled={!description || !amount}
+            icon="check"
           >
             Save
           </Button>
@@ -296,6 +298,7 @@ const NewTransaction = () => {
             contentStyle={{ height: 48 }}
             onPress={handleAdd}
             disabled={!description || !amount}
+            icon="plus"
           >
             Add
           </Button>
