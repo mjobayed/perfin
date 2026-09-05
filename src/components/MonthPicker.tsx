@@ -8,6 +8,21 @@ interface MonthPickerProps {
   maxDate?: Date;
 }
 
+const MONTH_LABELS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 const MonthPicker: React.FC<MonthPickerProps> = ({
   value,
   onSelect,
@@ -32,6 +47,14 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
 
   const goToPreviousYear = () => setViewYear((year) => year - 1);
   const goToNextYear = () => setViewYear((year) => year + 1);
+
+  const isMonthDisabled = (monthIndex: number) => {
+    if (!maxDate) return false;
+
+    const candidate = new Date(viewYear, monthIndex, 1);
+    const maxMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+    return candidate > maxMonth;
+  };
 
   return (
     <>
@@ -68,6 +91,40 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
             </Text>
             <IconButton icon="chevron-right" onPress={goToNextYear} />
           </View>
+
+          <View style={styles.grid}>
+            {MONTH_LABELS.map((monthLabel, index) => {
+              const isSelected =
+                value.getFullYear() === viewYear && value.getMonth() === index;
+              const isDisabled = isMonthDisabled(index);
+
+              return (
+                <Pressable
+                  key={monthLabel}
+                  disabled={isDisabled}
+                  style={[
+                    styles.monthCell,
+                    isSelected && {
+                      backgroundColor: theme.colors.primaryContainer,
+                    },
+                  ]}
+                >
+                  <Text
+                    variant="bodyLarge"
+                    style={{
+                      color: isDisabled
+                        ? theme.colors.onSurfaceDisabled
+                        : isSelected
+                          ? theme.colors.onPrimaryContainer
+                          : theme.colors.onSurface,
+                    }}
+                  >
+                    {monthLabel}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </Modal>
       </Portal>
     </>
@@ -97,5 +154,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+
+  monthCell: {
+    width: "30%",
+    paddingVertical: 12,
+    alignItems: "center",
+    borderRadius: 12,
+    marginBottom: 8,
   },
 });
