@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TotalDataType, TxnDataType } from "@/types/types";
 import { useTxn } from "@/context/TxnContext";
+import MonthPicker from "@/components/MonthPicker";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -249,6 +250,12 @@ export default function Index() {
         ]}
         style={styles.viewModeToggle}
       />
+
+      {viewMode === "month" && (
+        <View>
+          <MonthPicker />
+        </View>
+      )}
 
       {!isSearching && (
         <Surface
