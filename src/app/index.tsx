@@ -186,31 +186,37 @@ export default function Index() {
     );
   };
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Icon
-        source="tray-arrow-down"
-        size={48}
-        color={theme.colors.onSurfaceVariant}
-      />
-      <Text
-        variant="titleMedium"
-        style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
-      >
-        No transactions yet
-      </Text>
-      <Text
-        variant="bodyMedium"
-        style={{
-          color: theme.colors.onSurfaceVariant,
-          marginTop: 4,
-          textAlign: "center",
-        }}
-      >
-        Tap "New Transaction" to add your first income or expense.
-      </Text>
-    </View>
-  );
+  const renderEmptyState = () => {
+    const isSearchMiss = searchQuery.trim().length > 0;
+
+    return (
+      <View style={styles.emptyState}>
+        <Icon
+          source={isSearchMiss ? "magnify-close" : "tray-arrow-down"}
+          size={48}
+          color={theme.colors.onSurfaceVariant}
+        />
+        <Text
+          variant="titleMedium"
+          style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
+        >
+          {isSearchMiss ? "No matching transactions" : "No transactions yet"}
+        </Text>
+        <Text
+          variant="bodyMedium"
+          style={{
+            color: theme.colors.onSurfaceVariant,
+            marginTop: 4,
+            textAlign: "center",
+          }}
+        >
+          {isSearchMiss
+            ? "Try a different description or note"
+            : 'Tap "New Transaction" to add your first income or expense.'}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
