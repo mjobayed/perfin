@@ -41,6 +41,10 @@ export default function Index() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"all" | "month">("all");
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -253,7 +257,11 @@ export default function Index() {
 
       {viewMode === "month" && (
         <View>
-          <MonthPicker />
+          <MonthPicker
+            value={selectedMonth}
+            onSelect={setSelectedMonth}
+            maxDate={new Date()}
+          />
         </View>
       )}
 
