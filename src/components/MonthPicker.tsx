@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { IconButton, Text, useTheme } from "react-native-paper";
+import { IconButton, Text, useTheme, Portal, Modal } from "react-native-paper";
 
 interface MonthPickerProps {
   value: Date;
@@ -14,14 +14,24 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
   maxDate,
 }) => {
   const theme = useTheme();
+  const [isVisible, setIsVisible] = useState(false);
 
   const label = value.toLocaleDateString("en-GB", {
     month: "long",
     year: "numeric",
   });
+
+  const openPicker = () => {
+    setIsVisible(true);
+  };
+
+  const closePicker = () => {
+    setIsVisible(false);
+  };
+
   return (
     <>
-      <Pressable>
+      <Pressable onPress={openPicker}>
         <View
           style={[
             styles.trigger,
@@ -34,6 +44,19 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
           <IconButton icon="chevron-down" size={18} style={{ margin: 0 }} />
         </View>
       </Pressable>
+
+      <Portal>
+        <Modal
+          visible={isVisible}
+          onDismiss={closePicker}
+          contentContainerStyle={[
+            styles.modal,
+            { backgroundColor: theme.colors.elevation.level3 },
+          ]}
+        >
+          <Text>This is a modal</Text>
+        </Modal>
+      </Portal>
     </>
   );
 };
@@ -49,5 +72,11 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 4,
     marginTop: 12,
+  },
+
+  modal: {
+    marginHorizontal: 32,
+    borderRadius: 20,
+    padding: 20,
   },
 });
