@@ -324,6 +324,7 @@ export default function Index() {
         ]}
         ListEmptyComponent={renderEmptyState}
         onScroll={onListScroll}
+        keyboardShouldPersistTaps="handled"
       />
 
       <AnimatedFAB
