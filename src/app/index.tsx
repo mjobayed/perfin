@@ -15,6 +15,7 @@ import {
   Card,
   Icon,
   Searchbar,
+  SegmentedButtons,
   Surface,
   Text,
   useTheme,
@@ -38,6 +39,7 @@ export default function Index() {
   const { setEntryData, setTxnData } = useTxn();
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"all" | "month">("all");
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -238,6 +240,16 @@ export default function Index() {
         )}
       </Appbar.Header>
 
+      <SegmentedButtons
+        value={viewMode}
+        onValueChange={(value) => setViewMode(value as "all" | "month")}
+        buttons={[
+          { value: "all", label: "All Time" },
+          { value: "month", label: "By Month" },
+        ]}
+        style={styles.viewModeToggle}
+      />
+
       {!isSearching && (
         <Surface
           mode="flat"
@@ -418,4 +430,8 @@ const styles = StyleSheet.create({
   },
 
   listContentEmpty: { flexGrow: 1 },
+  viewModeToggle: {
+    marginHorizontal: 16,
+    marginTop: 8,
+  },
 });
