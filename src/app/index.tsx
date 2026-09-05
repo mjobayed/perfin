@@ -1,5 +1,5 @@
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -14,6 +14,7 @@ import {
   Avatar,
   Card,
   Icon,
+  Searchbar,
   Surface,
   Text,
   useTheme,
@@ -35,6 +36,8 @@ export default function Index() {
     expense: 0,
   });
   const { setEntryData, setTxnData } = useTxn();
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const calculateTotal = (data: TxnDataType[]) => {
     let totalBalance = 0;
@@ -118,6 +121,26 @@ export default function Index() {
     setIsExtended(currentScrollPosition <= 0);
   };
 
+  const openSearch = () => {
+    setIsSearching(true);
+  };
+
+  const closeSearch = () => {
+    setIsSearching(false);
+    setSearchQuery("");
+  };
+
+  const filteredHistory = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return history;
+
+    return history.filter(
+      (item) =>
+        item.description.toLowerCase().includes(query) ||
+        item.notes.toLowerCase().includes(query),
+    );
+  }, [history, searchQuery]);
+
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
     const isIncome = item.type === "income";
     return (
@@ -163,122 +186,145 @@ export default function Index() {
     );
   };
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Icon
-        source="tray-arrow-down"
-        size={48}
-        color={theme.colors.onSurfaceVariant}
-      />
-      <Text
-        variant="titleMedium"
-        style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
-      >
-        No transactions yet
-      </Text>
-      <Text
-        variant="bodyMedium"
-        style={{
-          color: theme.colors.onSurfaceVariant,
-          marginTop: 4,
-          textAlign: "center",
-        }}
-      >
-        Tap "New Transaction" to add your first income or expense.
-      </Text>
-    </View>
-  );
+  const renderEmptyState = () => {
+    const isSearchMiss = searchQuery.trim().length > 0;
+
+    return (
+      <View style={styles.emptyState}>
+        <Icon
+          source={isSearchMiss ? "magnify-close" : "tray-arrow-down"}
+          size={48}
+          color={theme.colors.onSurfaceVariant}
+        />
+        <Text
+          variant="titleMedium"
+          style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
+        >
+          {isSearchMiss ? "No matching transactions" : "No transactions yet"}
+        </Text>
+        <Text
+          variant="bodyMedium"
+          style={{
+            color: theme.colors.onSurfaceVariant,
+            marginTop: 4,
+            textAlign: "center",
+          }}
+        >
+          {isSearchMiss
+            ? "Try a different description or note"
+            : 'Tap "New Transaction" to add your first income or expense.'}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <Surface style={[styles.rootSurface, { paddingBottom: insets.bottom }]}>
       <Appbar.Header elevated>
-        <Appbar.Content title="Home" />
+        {isSearching ? (
+          <Searchbar
+            placeholder="Search Transactions"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            icon="arrow-left"
+            onIconPress={closeSearch}
+            autoFocus
+          />
+        ) : (
+          <>
+            <Appbar.Content style={{ marginLeft: 10 }} title="Home" />
+            <Appbar.Action icon="magnify" onPress={openSearch} />
+          </>
+        )}
       </Appbar.Header>
 
-      <Surface
-        mode="flat"
-        style={[
-          styles.summaryCard,
-          { backgroundColor: theme.colors.elevation.level2 },
-        ]}
-      >
-        <Text
-          variant="labelLarge"
-          style={{ color: theme.colors.onSurfaceVariant }}
+      {!isSearching && (
+        <Surface
+          mode="flat"
+          style={[
+            styles.summaryCard,
+            { backgroundColor: theme.colors.elevation.level2 },
+          ]}
         >
-          Total Balance
-        </Text>
-        <Text
-          variant="displaySmall"
-          style={{ fontWeight: "700", color: theme.colors.onSurface }}
-        >
-          {total.balance}
-        </Text>
+          <Text
+            variant="labelLarge"
+            style={{ color: theme.colors.onSurfaceVariant }}
+          >
+            Total Balance
+          </Text>
+          <Text
+            variant="displaySmall"
+            style={{ fontWeight: "700", color: theme.colors.onSurface }}
+          >
+            {total.balance}
+          </Text>
 
-        <View style={styles.summaryRow}>
-          <View style={styles.summaryPill}>
-            <Icon
-              source="arrow-up-bold-circle"
-              size={20}
-              color={theme.colors.primary}
-            />
-            <View>
-              <Text
-                variant="labelSmall"
-                style={{ color: theme.colors.onSurfaceVariant }}
-              >
-                Income
-              </Text>
-              <Text
-                variant="titleMedium"
-                style={{ color: theme.colors.primary, fontWeight: "600" }}
-              >
-                {total.income}
-              </Text>
+          <View style={styles.summaryRow}>
+            <View style={styles.summaryPill}>
+              <Icon
+                source="arrow-up-bold-circle"
+                size={20}
+                color={theme.colors.primary}
+              />
+              <View>
+                <Text
+                  variant="labelSmall"
+                  style={{ color: theme.colors.onSurfaceVariant }}
+                >
+                  Income
+                </Text>
+                <Text
+                  variant="titleMedium"
+                  style={{ color: theme.colors.primary, fontWeight: "600" }}
+                >
+                  {total.income}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.summaryPill}>
+              <Icon
+                source="arrow-down-bold-circle"
+                size={20}
+                color={theme.colors.error}
+              />
+              <View>
+                <Text
+                  variant="labelSmall"
+                  style={{ color: theme.colors.onSurfaceVariant }}
+                >
+                  Expense
+                </Text>
+                <Text
+                  variant="titleMedium"
+                  style={{ color: theme.colors.error, fontWeight: "600" }}
+                >
+                  {total.expense}
+                </Text>
+              </View>
             </View>
           </View>
-
-          <View style={styles.summaryPill}>
-            <Icon
-              source="arrow-down-bold-circle"
-              size={20}
-              color={theme.colors.error}
-            />
-            <View>
-              <Text
-                variant="labelSmall"
-                style={{ color: theme.colors.onSurfaceVariant }}
-              >
-                Expense
-              </Text>
-              <Text
-                variant="titleMedium"
-                style={{ color: theme.colors.error, fontWeight: "600" }}
-              >
-                {total.expense}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Surface>
+        </Surface>
+      )}
 
       <Text
         variant="titleSmall"
         style={[styles.sectionLabel, { color: theme.colors.onSurfaceVariant }]}
       >
-        Recent Transactions
+        {isSearching ? "Search Results" : "Recent Transactions"}
       </Text>
 
       <FlatList
-        data={history}
+        data={filteredHistory}
         keyExtractor={(item) => item.txnId.toString()}
         renderItem={renderTxnItem}
         contentContainerStyle={[
           styles.listContainer,
-          history.length === 0 && styles.listContentEmpty,
+          filteredHistory.length === 0 && styles.listContentEmpty,
         ]}
         ListEmptyComponent={renderEmptyState}
         onScroll={onListScroll}
+        keyboardShouldPersistTaps="handled"
       />
 
       <AnimatedFAB
