@@ -15,6 +15,7 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
 }) => {
   const theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
+  const [viewYear, setViewYear] = useState(value.getFullYear());
 
   const label = value.toLocaleDateString("en-GB", {
     month: "long",
@@ -28,6 +29,9 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
   const closePicker = () => {
     setIsVisible(false);
   };
+
+  const goToPreviousYear = () => setViewYear((year) => year - 1);
+  const goToNextYear = () => setViewYear((year) => year + 1);
 
   return (
     <>
@@ -54,7 +58,16 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
             { backgroundColor: theme.colors.elevation.level3 },
           ]}
         >
-          <Text>This is a modal</Text>
+          <View style={styles.yearRow}>
+            <IconButton icon="chevron-left" onPress={goToPreviousYear} />
+            <Text
+              variant="titleLarge"
+              style={{ color: theme.colors.onSurface }}
+            >
+              {viewYear}
+            </Text>
+            <IconButton icon="chevron-right" onPress={goToNextYear} />
+          </View>
         </Modal>
       </Portal>
     </>
@@ -78,5 +91,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     borderRadius: 20,
     padding: 20,
+  },
+
+  yearRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
