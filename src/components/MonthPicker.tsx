@@ -31,7 +31,7 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
           <Text variant="titleMedium" style={{ color: theme.colors.onSurface }}>
             {label}
           </Text>
-          <IconButton icon="chevron-down" size={18} />
+          <IconButton icon="chevron-down" size={18} style={{ margin: 0 }} />
         </View>
       </Pressable>
     </>
