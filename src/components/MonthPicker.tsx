@@ -56,6 +56,12 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
     return candidate > maxMonth;
   };
 
+  const handleMonthPress = (monthIndex: number) => {
+    if (isMonthDisabled(monthIndex)) return;
+    onSelect(new Date(viewYear, monthIndex, 1));
+    closePicker();
+  };
+
   return (
     <>
       <Pressable onPress={openPicker}>
@@ -102,6 +108,7 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
                 <Pressable
                   key={monthLabel}
                   disabled={isDisabled}
+                  onPress={() => handleMonthPress(index)}
                   style={[
                     styles.monthCell,
                     isSelected && {
