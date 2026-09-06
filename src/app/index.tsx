@@ -151,6 +151,11 @@ export default function Index() {
     );
   }, [monthHistory, searchQuery]);
 
+  const monthLabel = selectedMonth.toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
     const isIncome = item.type === "income";
     return (
@@ -198,19 +203,31 @@ export default function Index() {
 
   const renderEmptyState = () => {
     const isSearchMiss = searchQuery.trim().length > 0;
+    const hasNoHistoryAtAll = history.length === 0;
+    const isMonthEmpty = viewMode === "month" && monthHistory.length === 0;
+
+    let icon = "tray-icon-down";
+    let title = "No transactions yet";
+    let subtitle = 'Tap "New Transaction" to add your first income or expense.';
+
+    if (isSearchMiss) {
+      icon = "magnify-close";
+      title = "No matching transactions";
+      subtitle = "Try a different description or note";
+    } else if (isMonthEmpty && !hasNoHistoryAtAll) {
+      icon = "calendar-blank";
+      title = `No transactions in ${monthLabel}`;
+      subtitle = "Try a different month or add a new transaction.";
+    }
 
     return (
       <View style={styles.emptyState}>
-        <Icon
-          source={isSearchMiss ? "magnify-close" : "tray-arrow-down"}
-          size={48}
-          color={theme.colors.onSurfaceVariant}
-        />
+        <Icon source={icon} size={48} color={theme.colors.onSurfaceVariant} />
         <Text
           variant="titleMedium"
           style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
         >
-          {isSearchMiss ? "No matching transactions" : "No transactions yet"}
+          {title}
         </Text>
         <Text
           variant="bodyMedium"
@@ -220,9 +237,7 @@ export default function Index() {
             textAlign: "center",
           }}
         >
-          {isSearchMiss
-            ? "Try a different description or note"
-            : 'Tap "New Transaction" to add your first income or expense.'}
+          {subtitle}
         </Text>
       </View>
     );
