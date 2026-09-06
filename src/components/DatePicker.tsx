@@ -15,7 +15,6 @@ interface DateInputProps {
 
 const DatePicker: React.FC<DateInputProps> = ({ value, onPick }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [curDate, setCurDate] = useState("");
 
   const formatDate = (date: Date | undefined) => {
     if (!date) return "";
@@ -33,10 +32,7 @@ const DatePicker: React.FC<DateInputProps> = ({ value, onPick }) => {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  useEffect(() => {
-    setCurDate(formatDate(today));
-  });
+  const curDate = formatDate(today);
 
   return (
     <View>
