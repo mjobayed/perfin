@@ -15,6 +15,7 @@ import {
   Card,
   Icon,
   Searchbar,
+  SegmentedButtons,
   Surface,
   Text,
   useTheme,
@@ -23,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TotalDataType, TxnDataType } from "@/types/types";
 import { useTxn } from "@/context/TxnContext";
+import MonthPicker from "@/components/MonthPicker";
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -30,33 +32,14 @@ export default function Index() {
   const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
   const [history, setHistory] = useState<TxnDataType[]>([]);
-  const [total, setTotal] = useState<TotalDataType>({
-    balance: 0,
-    income: 0,
-    expense: 0,
-  });
   const { setEntryData, setTxnData } = useTxn();
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const calculateTotal = (data: TxnDataType[]) => {
-    let totalBalance = 0;
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-    data.forEach((item) => {
-      if (item.type === "income") totalIncome += item.amount;
-      if (item.type === "expense") totalExpense += item.amount;
-    });
-
-    totalBalance = totalIncome - totalExpense;
-
-    setTotal({
-      balance: totalBalance,
-      income: totalIncome,
-      expense: totalExpense,
-    });
-  };
+  const [viewMode, setViewMode] = useState<"all" | "month">("all");
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
 
   const loadHistory = async () => {
     try {
@@ -64,7 +47,6 @@ export default function Index() {
       if (data) {
         let dataObj = JSON.parse(data);
         setHistory(dataObj);
-        calculateTotal(dataObj);
       }
     } catch (err) {
       console.error("Failed to load transactions", err);
@@ -130,16 +112,49 @@ export default function Index() {
     setSearchQuery("");
   };
 
+  const monthHistory = useMemo(() => {
+    if (viewMode === "all") return history;
+
+    return history.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        itemDate.getFullYear() === selectedMonth.getFullYear() &&
+        itemDate.getMonth() === selectedMonth.getMonth()
+      );
+    });
+  }, [history, viewMode, selectedMonth]);
+
+  const total = useMemo<TotalDataType>(() => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    monthHistory.forEach((item) => {
+      if (item.type === "income") totalIncome += item.amount;
+      if (item.type === "expense") totalExpense += item.amount;
+    });
+
+    return {
+      balance: totalIncome - totalExpense,
+      income: totalIncome,
+      expense: totalExpense,
+    };
+  }, [monthHistory]);
+
   const filteredHistory = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return history;
+    if (!query) return monthHistory;
 
-    return history.filter(
+    return monthHistory.filter(
       (item) =>
         item.description.toLowerCase().includes(query) ||
         item.notes.toLowerCase().includes(query),
     );
-  }, [history, searchQuery]);
+  }, [monthHistory, searchQuery]);
+
+  const monthLabel = selectedMonth.toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
     const isIncome = item.type === "income";
@@ -188,19 +203,31 @@ export default function Index() {
 
   const renderEmptyState = () => {
     const isSearchMiss = searchQuery.trim().length > 0;
+    const hasNoHistoryAtAll = history.length === 0;
+    const isMonthEmpty = viewMode === "month" && monthHistory.length === 0;
+
+    let icon = "tray-icon-down";
+    let title = "No transactions yet";
+    let subtitle = 'Tap "New Transaction" to add your first income or expense.';
+
+    if (isSearchMiss) {
+      icon = "magnify-close";
+      title = "No matching transactions";
+      subtitle = "Try a different description or note";
+    } else if (isMonthEmpty && !hasNoHistoryAtAll) {
+      icon = "calendar-blank";
+      title = `No transactions in ${monthLabel}`;
+      subtitle = "Try a different month or add a new transaction.";
+    }
 
     return (
       <View style={styles.emptyState}>
-        <Icon
-          source={isSearchMiss ? "magnify-close" : "tray-arrow-down"}
-          size={48}
-          color={theme.colors.onSurfaceVariant}
-        />
+        <Icon source={icon} size={48} color={theme.colors.onSurfaceVariant} />
         <Text
           variant="titleMedium"
           style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
         >
-          {isSearchMiss ? "No matching transactions" : "No transactions yet"}
+          {title}
         </Text>
         <Text
           variant="bodyMedium"
@@ -210,9 +237,7 @@ export default function Index() {
             textAlign: "center",
           }}
         >
-          {isSearchMiss
-            ? "Try a different description or note"
-            : 'Tap "New Transaction" to add your first income or expense.'}
+          {subtitle}
         </Text>
       </View>
     );
@@ -237,6 +262,34 @@ export default function Index() {
           </>
         )}
       </Appbar.Header>
+
+      <SegmentedButtons
+        value={viewMode}
+        onValueChange={(value) => {
+          setViewMode(value as "all" | "month");
+          if (value === "month") {
+            const today = new Date();
+            setSelectedMonth(
+              new Date(today.getFullYear(), today.getMonth(), 1),
+            );
+          }
+        }}
+        buttons={[
+          { value: "all", label: "All Time" },
+          { value: "month", label: "By Month" },
+        ]}
+        style={styles.viewModeToggle}
+      />
+
+      {viewMode === "month" && (
+        <View>
+          <MonthPicker
+            value={selectedMonth}
+            onSelect={setSelectedMonth}
+            maxDate={new Date()}
+          />
+        </View>
+      )}
 
       {!isSearching && (
         <Surface
@@ -327,15 +380,17 @@ export default function Index() {
         keyboardShouldPersistTaps="handled"
       />
 
-      <AnimatedFAB
-        icon={"plus"}
-        label={"New Transaction"}
-        extended={isExtended}
-        onPress={handleNewTransaction}
-        animateFrom={"right"}
-        iconMode={"dynamic"}
-        style={styles.fabStyle}
-      />
+      {!isSearching && (
+        <AnimatedFAB
+          icon={"plus"}
+          label={"New Transaction"}
+          extended={isExtended}
+          onPress={handleNewTransaction}
+          animateFrom={"right"}
+          iconMode={"dynamic"}
+          style={styles.fabStyle}
+        />
+      )}
     </Surface>
   );
 }
@@ -418,4 +473,8 @@ const styles = StyleSheet.create({
   },
 
   listContentEmpty: { flexGrow: 1 },
+  viewModeToggle: {
+    marginHorizontal: 16,
+    marginTop: 8,
+  },
 });
