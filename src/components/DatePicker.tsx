@@ -56,6 +56,9 @@ const DatePicker: React.FC<DateInputProps> = ({ value, onPick }) => {
         date={value}
         onDismiss={() => setIsVisible(false)}
         onConfirm={handleConfirm}
+        validRange={{
+          endDate: today,
+        }}
       />
     </View>
   );
