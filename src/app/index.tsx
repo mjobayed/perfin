@@ -32,11 +32,6 @@ export default function Index() {
   const theme = useTheme();
   const [isExtended, setIsExtended] = useState(true);
   const [history, setHistory] = useState<TxnDataType[]>([]);
-  const [total, setTotal] = useState<TotalDataType>({
-    balance: 0,
-    income: 0,
-    expense: 0,
-  });
   const { setEntryData, setTxnData } = useTxn();
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,32 +41,12 @@ export default function Index() {
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
 
-  const calculateTotal = (data: TxnDataType[]) => {
-    let totalBalance = 0;
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-    data.forEach((item) => {
-      if (item.type === "income") totalIncome += item.amount;
-      if (item.type === "expense") totalExpense += item.amount;
-    });
-
-    totalBalance = totalIncome - totalExpense;
-
-    setTotal({
-      balance: totalBalance,
-      income: totalIncome,
-      expense: totalExpense,
-    });
-  };
-
   const loadHistory = async () => {
     try {
       const data = await AsyncStorage.getItem("transaction_history");
       if (data) {
         let dataObj = JSON.parse(data);
         setHistory(dataObj);
-        calculateTotal(dataObj);
       }
     } catch (err) {
       console.error("Failed to load transactions", err);
@@ -148,6 +123,22 @@ export default function Index() {
       );
     });
   }, [history, viewMode, selectedMonth]);
+
+  const total = useMemo<TotalDataType>(() => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    monthHistory.forEach((item) => {
+      if (item.type === "income") totalIncome += item.amount;
+      if (item.type === "expense") totalExpense += item.amount;
+    });
+
+    return {
+      balance: totalIncome - totalExpense,
+      income: totalIncome,
+      expense: totalExpense,
+    };
+  }, [monthHistory]);
 
   const filteredHistory = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
