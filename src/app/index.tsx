@@ -380,15 +380,17 @@ export default function Index() {
         keyboardShouldPersistTaps="handled"
       />
 
-      <AnimatedFAB
-        icon={"plus"}
-        label={"New Transaction"}
-        extended={isExtended}
-        onPress={handleNewTransaction}
-        animateFrom={"right"}
-        iconMode={"dynamic"}
-        style={styles.fabStyle}
-      />
+      {!isSearching && (
+        <AnimatedFAB
+          icon={"plus"}
+          label={"New Transaction"}
+          extended={isExtended}
+          onPress={handleNewTransaction}
+          animateFrom={"right"}
+          iconMode={"dynamic"}
+          style={styles.fabStyle}
+        />
+      )}
     </Surface>
   );
 }
