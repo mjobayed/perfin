@@ -225,7 +225,11 @@ export default function Index() {
         <Icon source={icon} size={48} color={theme.colors.onSurfaceVariant} />
         <Text
           variant="titleMedium"
-          style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}
+          style={{
+            color: theme.colors.onSurfaceVariant,
+            textAlign: "center",
+            marginTop: 12,
+          }}
         >
           {title}
         </Text>
