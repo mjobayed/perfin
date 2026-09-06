@@ -265,7 +265,15 @@ export default function Index() {
 
       <SegmentedButtons
         value={viewMode}
-        onValueChange={(value) => setViewMode(value as "all" | "month")}
+        onValueChange={(value) => {
+          setViewMode(value as "all" | "month");
+          if (value === "month") {
+            const today = new Date();
+            setSelectedMonth(
+              new Date(today.getFullYear(), today.getMonth(), 1),
+            );
+          }
+        }}
         buttons={[
           { value: "all", label: "All Time" },
           { value: "month", label: "By Month" },
