@@ -137,16 +137,28 @@ export default function Index() {
     setSearchQuery("");
   };
 
+  const monthHistory = useMemo(() => {
+    if (viewMode === "all") return history;
+
+    return history.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        itemDate.getFullYear() === selectedMonth.getFullYear() &&
+        itemDate.getMonth() === selectedMonth.getMonth()
+      );
+    });
+  }, [history, viewMode, selectedMonth]);
+
   const filteredHistory = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return history;
+    if (!query) return monthHistory;
 
-    return history.filter(
+    return monthHistory.filter(
       (item) =>
         item.description.toLowerCase().includes(query) ||
         item.notes.toLowerCase().includes(query),
     );
-  }, [history, searchQuery]);
+  }, [monthHistory, searchQuery]);
 
   const renderTxnItem = ({ item }: { item: TxnDataType }) => {
     const isIncome = item.type === "income";
