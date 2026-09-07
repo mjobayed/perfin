@@ -179,7 +179,7 @@ const NewTransaction = () => {
         />
       </Appbar.Header>
 
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <SegmentedButtons
             value={txnType}
