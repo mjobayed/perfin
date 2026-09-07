@@ -28,3 +28,16 @@ Perfin is a personal finance manager app for tracking income and expenses. Users
 | New Transaction                                        | Edit Transaction                                       |
 | ------------------------------------------------------ | ------------------------------------------------------ |
 | ![Screenshot 04](assets/screenshots/screenshot-04.png) | ![Screenshot 05](assets/screenshots/screenshot-05.png) |
+
+## Getting Started
+
+```bash
+git clone https://github.com/mjobayed/perfin.git
+cd perfin
+npm install
+npx expo start
+```
+
+## License
+
+MIT
