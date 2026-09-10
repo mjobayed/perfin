@@ -6,6 +6,10 @@ A simple finance manager app for Android.
 
 Perfin is a personal finance manager app for tracking income and expenses. Users can log transactions, review their spending all-time or broken down by month, and quickly add or edit entries, all powered by fully client side system that stores data on device.
 
+## Download
+
+Download the apk from [Releases page](https://github.com/mjobayed/perfin/releases).
+
 ## Features
 
 - All-time transaction overview
